@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoMaintain User Guide | Native Ecosystem Maintenance Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            background-color: var(--primary-color);
+            color: white;
+            position: fixed;
+            width: 250px;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: white;
+            background-color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo {
+            font-weight: 700;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--secondary-color);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: var(--primary-color);
+        }
+        
+        .guide-section {
+            margin-bottom: 40px;
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .tip-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning-box {
+            background-color: #fde8e8;
+            border-left: 4px solid var(--danger-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .best-practice {
+            background-color: #e8f8ef;
+            border-left: 4px solid var(--success-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .table-features {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-features th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .table-features td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .table-features tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            cursor: pointer;
+        }
+        
+        .section-nav {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .section-nav .nav-link {
+            color: var(--secondary-color);
+            padding: 5px 10px;
+            border-left: 3px solid transparent;
+        }
+        
+        .section-nav .nav-link:hover, .section-nav .nav-link.active {
+            border-left: 3px solid var(--accent-color);
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar p-0">
+                <div class="logo">EcoMaintain User Guide</div>
+                <ul class="nav flex-column p-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#overview">
+                            <i class="bi bi-house"></i> Overview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#getting-started">
+                            <i class="bi bi-play-circle"></i> Getting Started
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#site-assessment">
+                            <i class="bi bi-clipboard-data"></i> Site Assessment
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#maintenance-plan">
+                            <i class="bi bi-calendar-check"></i> Maintenance Plan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#species-register">
+                            <i class="bi bi-tree"></i> Species Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#monitoring">
+                            <i class="bi bi-binoculars"></i> Monitoring
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#reports">
+                            <i class="bi bi-file-earmark-text"></i> Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#legislation">
+                            <i class="bi bi-journal-bookmark"></i> Legislation
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#settings">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#data-management">
+                            <i class="bi bi-database"></i> Data Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#best-practices">
+                            <i class="bi bi-check-circle"></i> Best Practices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#troubleshooting">
+                            <i class="bi bi-tools"></i> Troubleshooting
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">EcoMaintain User Guide</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
+                            <i class="bi bi-printer"></i> Print Guide
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overview Section -->
+                <div class="guide-section" id="overview">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Overview</h2>
+                            <p class="card-text">
+                                EcoMaintain is a comprehensive web-based application designed to help environmental professionals manage native ecosystem maintenance activities in compliance with AHCECR301 requirements. This tool provides functionality for site assessment, maintenance planning, species monitoring, compliance tracking, and reporting.
+                            </p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5>Key Features</h5>
+                                    <ul>
+                                        <li>Site assessment and ecosystem health monitoring</li>
+                                        <li>Maintenance activity planning and tracking</li>
+                                        <li>Species inventory and monitoring</li>
+                                        <li>Compliance tracking with environmental legislation</li>
+                                        <li>Comprehensive reporting capabilities</li>
+                                        <li>Interactive mapping and spatial data visualization</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>System Requirements</h5>
+                                    <ul>
+                                        <li>Modern web browser (Chrome, Firefox, Safari, Edge)</li>
+                                        <li>Internet connection (for external libraries and mapping)</li>
+                                        <li>JavaScript enabled</li>
+                                        <li>Recommended screen resolution: 1280x768 or higher</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Getting Started Section -->
+                <div class="guide-section" id="getting-started">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Getting Started</h2>
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4>Initial Setup</h4>
+                                    <p><span class="step-number">1</span> <strong>Access the Application:</strong> Open the HTML file in your web browser</p>
+                                    <p><span class="step-number">2</span> <strong>Review Default Data:</strong> The application comes with sample data to demonstrate functionality</p>
+                                    <p><span class="step-number">3</span> <strong>Configure Site Settings:</strong> Navigate to the Settings tab to enter your specific site information</p>
+                                    
+                                    <div class="tip-box">
+                                        <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Take time to explore the sample data before entering your own information to understand how the application works.
+                                    </div>
+                                    
+                                    <h4 class="mt-4">Navigation</h4>
+                                    <p>The application uses a tab-based navigation system with the following main sections:</p>
+                                    <ul>
+                                        <li><strong>Dashboard:</strong> Overview of key metrics and recent activities</li>
+                                        <li><strong>Site Assessment:</strong> Record and review ecosystem health assessments</li>
+                                        <li><strong>Maintenance Plan:</strong> Schedule and track maintenance activities</li>
+                                        <li><strong>Species Register:</strong> Catalog and monitor flora and fauna</li>
+                                        <li><strong>Monitoring:</strong> Record field observations and surveys</li>
+                                        <li><strong>Reports:</strong> Generate compliance and activity reports</li>
+                                        <li><strong>Legislation:</strong> Reference relevant environmental legislation</li>
+                                        <li><strong>Settings:</strong> Configure application and user preferences</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="section-nav">
+                                        <h5>Quick Navigation</h5>
+                                        <nav class="nav flex-column">
+                                            <a class="nav-link" href="#dashboard">Dashboard Guide</a>
+                                            <a class="nav-link" href="#site-assessment">Site Assessment</a>
+                                            <a class="nav-link" href#maintenance-plan">Maintenance Planning</a>
+                                            <a class="nav-link" href="#species-register">Species Register</a>
+                                            <a class="nav-link" href="#monitoring">Monitoring</a>
+                                            <a class="nav-link" href="#reports">Reports</a>
+                                            <a class="nav-link" href="#best-practices">Best Practices</a>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div class="guide-section" id="dashboard">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Dashboard</h2>
+                            <p class="card-text">
+                                The dashboard provides an at-a-glance overview of your ecosystem management activities with key metrics and recent updates.
+                            </p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h5>Key Components</h5>
+                                    <ul>
+                                        <li><strong>Statistics Panel:</strong> Upcoming tasks, assessments, species records, and compliance percentage</li>
+                                        <li><strong>Upcoming Tasks:</strong> List of scheduled activities with due dates</li>
+                                        <li><strong>Site Health Indicators:</strong> Visual representation of ecosystem health metrics</li>
+                                        <li><strong>Recent Observations:</strong> Latest monitoring records</li>
+                                        <li><strong>Interactive Map:</strong> Geographic view of your site with zone overlays</li>
+                                        <li><strong>Compliance Checklist:</strong> Quick view of compliance status with AHCECR301</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Using the Dashboard</h5>
+                                    <p>The dashboard is your starting point each time you use EcoMaintain. It helps you:</p>
+                                    <ul>
+                                        <li>Quickly assess current priorities</li>
+                                        <li>Monitor compliance progress</li>
+                                        <li>Access recent activities and observations</li>
+                                        <li>Navigate to specific sections of the application</li>
+                                    </ul>
+                                    
+                                    <div class="tip-box">
+                                        <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Use the export and print functions on the dashboard to create quick status reports for meetings or presentations.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Site Assessment Section -->
+                <div class="guide-section" id="site-assessment">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Site Assessment</h2>
+                            <p class="card-text">
+                                Conduct and record comprehensive site assessments to monitor ecosystem health and identify management priorities.
+                            </p>
+                            
+                            <h4>Creating a New Assessment</h4>
+                            <p><span class="step-number">1</span> Click the "New Assessment" button on the Site Assessment tab</p>
+                            <p><span class="step-number">2</span> Enter assessment date and assessor name</p>
+                            <p><span class="step-number">3</span> Describe the site conditions and observations</p>
+                            <p><span class="step-number">4</span> Select ecosystem components present (flora, fauna, soil, water, etc.)</p>
+                            <p><span class="step-number">5</span> Rate overall ecosystem health using the standardized scale</p>
+                            <p><span class="step-number">6</span> Identify threats from the predefined list</p>
+                            <p><span class="step-number">7</span> Upload supporting photos if available</p>
+                            <p><span class="step-number">8</span> Save the assessment</p>
+                            
+                            <div class="best-practice">
+                                <i class="bi bi-check-circle"></i> <strong>Best Practice:</strong> Conduct assessments quarterly or after significant events. Use consistent methodology for comparable results over time.
+                            </div>
+                            
+                            <h4 class="mt-4">Viewing Previous Assessments</h4>
+                            <p>All previous assessments are displayed in a table format with key information:</p>
+                            <ul>
+                                <li>Browse the table to review past assessments</li>
+                                <li>Click "View" to see detailed information for any assessment</li>
+                                <li>Export assessments as PDF reports for documentation</li>
+                                <li>Compare assessments over time to track trends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Plan Section -->
+                <div class="guide-section" id="maintenance-plan">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Maintenance Plan</h2>
+                            <p class="card-text">
+                                Schedule, track, and manage all maintenance activities for your ecosystem management program.
+                            </p>
+                            
+                            <h4>Creating Maintenance Activities</h4>
+                            <p><span class="step-number">1</span> Click "New Activity" button</p>
+                            <p><span class="step-number">2</span> Select activity type (weed control, revegetation, erosion control, etc.)</p>
+                            <p><span class="step-number">3</span> Set start and end dates</p>
+                            <p><span class="step-number">4</span> Specify location and assign personnel</p>
+                            <p><span class="step-number">5</span> Add detailed descriptions and any special notes</p>
+                            <p><span class="step-number">6</span> Set priority level (low, medium, high)</p>
+                            <p><span class="step-number">7</span> Set initial status (planned, in-progress, etc.)</p>
+                            <p><span class="step-number">8</span> Save the activity</p>
+                            
+                            <h4 class="mt-4">Tracking Activities</h4>
+                            <p>Activities can be viewed in three different tabs:</p>
+                            <ul>
+                                <li><strong>Upcoming:</strong> Planned and in-progress activities</li>
+                                <li><strong>Completed:</strong> Finished activities with completion details</li>
+                                <li><strong>Overdue:</strong> Activities that are past their scheduled date</li>
+                            </ul>
+                            
+                            <h4>Calendar Integration</h4>
+                            <p>The Maintenance Calendar provides a visual overview of all scheduled activities:</p>
+                            <ul>
+                                <li>View all activities on an interactive calendar</li>
+                                <li>Click on events to see details</li>
+                                <li>Different activity types are color-coded for easy identification</li>
+                                <li>Switch between month, week, and day views</li>
+                            </ul>
+                            
+                            <div class="tip-box">
+                                <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Use the calendar view to identify scheduling conflicts and optimize resource allocation across different activities.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Species Register Section -->
+                <div class="guide-section" id="species-register">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Species Register</h2>
+                            <p class="card-text">
+                                Maintain a comprehensive inventory of all flora and fauna species present in your management area.
+                            </p>
+                            
+                            <h4>Adding Species Records</h4>
+                            <p><span class="step-number">1</span> Click "New Species" button</p>
+                            <p><span class="step-number">2</span> Enter scientific name (required) and common name</p>
+                            <p><span class="step-number">3</span> Classify by type (flora, fauna, fungi, other)</p>
+                            <p><span class="step-number">4</span> Set conservation status (native, introduced, weed, endangered, etc.)</p>
+                            <p><span class="step-number">5</span> Add descriptions and habitat information</p>
+                            <p><span class="step-number">6</span> Record last observation date</p>
+                            <p><span class="step-number">7</span> Upload images for identification</p>
+                            <p><span class="step-number">8</span> Save the species record</p>
+                            
+                            <h4 class="mt-4">Managing Species Data</h4>
+                            <p>Species information can be viewed in two formats:</p>
+                            <ul>
+                                <li><strong>Card View:</strong> Visual presentation of key species with images</li>
+                                <li><strong>Table View:</strong> Comprehensive list with filtering capabilities</li>
+                            </ul>
+                            
+                            <p>Additional functionality includes:</p>
+                            <ul>
+                                <li>Export species data for reporting or external analysis</li>
+                                <li>Link species to monitoring observations</li>
+                                <li>Filter by type or conservation status</li>
+                                <li>Quick actions for common tasks (control weeds, monitor threatened species)</li>
+                            </ul>
+                            
+                            <div class="best-practice">
+                                <i class="bi bi-check-circle"></i> <strong>Best Practice:</strong> Use standardized survey methods for consistency. Record both presence and abundance where applicable. Update species records after each survey.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Section -->
+                <div class="guide-section" id="monitoring">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Monitoring</h2>
+                            <p class="card-text">
+                                Record field observations, surveys, and monitoring activities to track changes in your ecosystem over time.
+                            </p>
+                            
+                            <h4>Logging Monitoring Activities</h4>
+                            <p><span class="step-number">1</span> Create new monitoring records for different types of observations</p>
+                            <p><span class="step-number">2</span> Record location, date, observer, and detailed findings</p>
+                            <p><span class="step-number">3</span> Associate observations with relevant species from your register</p>
+                            <p><span class="step-number">4</span> Upload photographic evidence when available</p>
+                            <p><span class="step-number">5</span> Save the monitoring record</p>
+                            
+                            <h4 class="mt-4">Specialized Monitoring Forms</h4>
+                            <p>EcoMaintain includes specialized forms for different types of monitoring:</p>
+                            
+                            <h5>Fauna Sightings</h5>
+                            <ul>
+                                <li>Record specific animal observations</li>
+                                <li>Note behavior and population counts</li>
+                                <li>Link to species in your register</li>
+                            </ul>
+                            
+                            <h5>Vegetation Surveys</h5>
+                            <ul>
+                                <li>Document plant cover percentages</li>
+                                <li>Record health ratings</li>
+                                <li>Track changes in vegetation composition</li>
+                            </ul>
+                            
+                            <h4>Viewing Monitoring History</h4>
+                            <p>All monitoring activities are displayed in a comprehensive table:</p>
+                            <ul>
+                                <li>Browse all monitoring records</li>
+                                <li>Filter by type, date, or location</li>
+                                <li>Generate specialized reports from monitoring data</li>
+                                <li>Track trends over time</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div class="guide-section" id="reports">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Reports</h2>
+                            <p class="card-text">
+                                Generate comprehensive reports for compliance documentation, management reviews, and regulatory submissions.
+                            </p>
+                            
+                            <h4>Available Report Types</h4>
+                            <table class="table-features">
+                                <thead>
+                                    <tr>
+                                        <th>Report Type</th>
+                                        <th>Purpose</th>
+                                        <th>Key Information</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Compliance Report</strong></td>
+                                        <td>AHCECR301 requirements documentation</td>
+                                        <td>Checklist status, evidence, compliance percentage</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Maintenance Summary</strong></td>
+                                        <td>Activity tracking and resource allocation</td>
+                                        <td>Completed activities, status updates, future plans</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Monitoring Summary</strong></td>
+                                        <td>Field observation compilation</td>
+                                        <td>Survey results, species observations, trends</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ecosystem Health Trend</strong></td>
+                                        <td>Long-term ecosystem assessment</td>
+                                        <td>Assessment comparisons, health indicators, changes</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Threat Management</strong></td>
+                                        <td>Risk assessment and mitigation tracking</td>
+                                        <td>Identified threats, control measures, effectiveness</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <h4 class="mt-4">Generating Reports</h4>
+                            <p><span class="step-number">1</span> Select report type from the available options</p>
+                            <p><span class="step-number">2</span> Choose date range for the report content</p>
+                            <p><span class="step-number">3</span> Select output format (PDF, Excel, Word)</p>
+                            <p><span class="step-number">4</span> Preview the report before finalizing</p>
+                            <p><span class="step-number">5</span> Download or print the completed report</p>
+                            
+                            <div class="tip-box">
+                                <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Generate reports ahead of regulatory deadlines to allow time for review and any necessary corrections. Keep all reports organized by date and type for easy reference.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legislation Section -->
+                <div class="guide-section" id="legislation">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Legislation & Compliance</h2>
+                            <p class="card-text">
+                                Access important regulatory information and track compliance with environmental legislation.
+                            </p>
+                            
+                            <h4>Legislative Reference</h4>
+                            <p>EcoMaintain provides information on key environmental legislation:</p>
+                            <ul>
+                                <li><strong>EPBC Act 1999:</strong> Federal environmental protection requirements</li>
+                                <li><strong>State/Territory Legislation:</strong> Jurisdiction-specific regulations</li>
+                                <li><strong>Local Government Regulations:</strong> Council-level requirements</li>
+                            </ul>
+                            
+                            <h4>Compliance Checklist</h4>
+                            <p>The interactive compliance checklist helps you track regulatory requirements:</p>
+                            <ul>
+                                <li>Monitor status of each compliance item</li>
+                                <li>Record evidence for compliance activities</li>
+                                <li>Add notes and documentation references</li>
+                                <li>Track overall compliance percentage</li>
+                            </ul>
+                            
+                            <div class="best-practice">
+                                <i class="bi bi-check-circle"></i> <strong>Best Practice:</strong> Regularly review legislative requirements. Maintain evidence for compliance activities. Document any non-compliance and remediation plans.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="guide-section" id="settings">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Settings</h2>
+                            <p class="card-text">
+                                Configure the application to your specific needs and manage user preferences.
+                            </p>
+                            
+                            <h4>User Profile</h4>
+                            <p>Update your personal information and application preferences:</p>
+                            <ul>
+                                <li>Name, email address, and contact information</li>
+                                <li>User role (administrator, ecologist, field technician, volunteer)</li>
+                                <li>Password changes for security</li>
+                            </ul>
+                            
+                            <h4>Site Configuration</h4>
+                            <p>Set up information specific to your management area:</p>
+                            <ul>
+                                <li>Site name, location, and geographic details</li>
+                                <li>Area measurements (hectares)</li>
+                                <li>Site description and management objectives</li>
+                            </ul>
+                            
+                            <h4>Data Management</h4>
+                            <p>Tools for managing your application data:</p>
+                            <ul>
+                                <li>Export all data for backup purposes</li>
+                                <li>Create database backups</li>
+                                <li>Reset test data (clears sample information)</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <i class="bi bi-exclamation-triangle"></i> <strong>Warning:</strong> The "Reset Test Data" function will permanently delete all sample data. Use with caution and ensure you have backups if needed.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management Section -->
+                <div class="guide-section" id="data-management">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Data Management</h2>
+                            <p class="card-text">
+                                Understand how EcoMaintain handles your data and implement effective data management practices.
+                            </p>
+                            
+                            <h4>Storage</h4>
+                            <ul>
+                                <li>All data is stored locally in your browser using localStorage</li>
+                                <li>No server connection required for basic functionality</li>
+                                <li>Data persists between browser sessions on the same device</li>
+                            </ul>
+                            
+                            <h4>Backup and Export</h4>
+                            <p>To prevent data loss, regularly:</p>
+                            <ul>
+                                <li>Export all data using the "Export All Data" feature</li>
+                                <li>Create comprehensive backups before making significant changes</li>
+                                <li>Individual sections (like Species) can be exported separately</li>
+                            </ul>
+                            
+                            <h4>Data Integrity</h4>
+                            <p>EcoMaintain includes features to maintain data quality:</p>
+                            <ul>
+                                <li>Form validation ensures required information is complete</li>
+                                <li>Required fields are clearly marked with asterisks (*)</li>
+                                <li>Date fields use standard formats for consistency</li>
+                                <li>Data relationships are maintained (e.g., species linked to observations)</li>
+                            </ul>
+                            
+                            <div class="tip-box">
+                                <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> For multi-user environments or enhanced data security, consider implementing a server-based version with proper authentication and database storage.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Best Practices Section -->
+                <div class="guide-section" id="best-practices">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Best Practices</h2>
+                            <p class="card-text">
+                                Implement these recommended practices to maximize the effectiveness of your ecosystem management program.
+                            </p>
+                            
+                            <h4>For Site Assessments</h4>
+                            <ul>
+                                <li>Conduct assessments quarterly or after significant events</li>
+                                <li>Use consistent methodology for comparable results</li>
+                                <li>Document threats with specific locations and severity</li>
+                                <li>Include photographic evidence when possible</li>
+                            </ul>
+                            
+                            <h4>For Maintenance Planning</h4>
+                            <ul>
+                                <li>Schedule activities based on seasonal requirements</li>
+                                <li>Prioritize high-impact tasks (weed control, erosion management)</li>
+                                <li>Assign tasks to qualified personnel</li>
+                                <li>Record completion details and any variations from plan</li>
+                            </ul>
+                            
+                            <h4>For Species Monitoring</h4>
+                            <ul>
+                                <li>Use standardized survey methods for consistency</li>
+                                <li>Record both presence and abundance where applicable</li>
+                                <li>Note behavioral observations for fauna</li>
+                                <li>Update species records after each survey</li>
+                            </ul>
+                            
+                            <h4>For Compliance</h4>
+                            <ul>
+                                <li>Regularly review legislative requirements</li>
+                                <li>Maintain evidence for compliance activities</li>
+                                <li>Generate reports ahead of regulatory deadlines</li>
+                                <li>Document any non-compliance and remediation plans</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting Section -->
+                <div class="guide-section" id="troubleshooting">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Troubleshooting</h2>
+                            <p class="card-text">
+                                Solutions for common issues you might encounter while using EcoMaintain.
+                            </p>
+                            
+                            <h4>Common Issues and Solutions</h4>
+                            
+                            <h5>Data Not Saving</h5>
+                            <ul>
+                                <li>Check that all required fields are completed</li>
+                                <li>Ensure browser has not disabled localStorage</li>
+                                <li>Try refreshing the page and re-entering data</li>
+                            </ul>
+                            
+                            <h5>Map Not Loading</h5>
+                            <ul>
+                                <li>Verify internet connection is active</li>
+                                <li>Check if mapping services are blocked by firewall</li>
+                                <li>Try refreshing the page</li>
+                            </ul>
+                            
+                            <h5>Calendar Not Displaying Events</h5>
+                            <ul>
+                                <li>Ensure activities have valid dates</li>
+                                <li>Check that activities are not filtered out</li>
+                                <li>Refresh the calendar view</li>
+                            </ul>
+                            
+                            <h4 class="mt-4">Performance Tips</h4>
+                            <ul>
+                                <li>Limit the number of photos uploaded to maintain performance</li>
+                                <li>Regularly export and clear old data if storage becomes limited</li>
+                                <li>Use the table filtering and sorting features for large datasets</li>
+                            </ul>
+                            
+                            <div class="warning-box">
+                                <i class="bi bi-exclamation-triangle"></i> <strong>Support:</strong> For technical issues or enhancement requests, please contact your system administrator. Regular updates to the application may add new features or improve existing functionality.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance Information -->
+                <div class="guide-section">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">Compliance with AHCECR301</h2>
+                            <p class="card-text">
+                                EcoMaintain is designed to assist with compliance against the AHCECR301 unit of competency, which covers:
+                            </p>
+                            <ul>
+                                <li>Implementing ecosystem maintenance procedures</li>
+                                <li>Monitoring ecosystem health</li>
+                                <li>Managing threats to native ecosystems</li>
+                                <li>Maintaining compliance with legislative requirements</li>
+                            </ul>
+                            <p>
+                                The application provides specific features to address each of these areas, with documentation and reporting capabilities to demonstrate compliance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Back to top functionality
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Show/hide back to top button based on scroll position
+        window.addEventListener('scroll', function() {
+            const backToTopButton = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+        
+        // Update active navigation based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.guide-section');
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 100) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                window.scrollTo({
+                    top: targetSection.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
