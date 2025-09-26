@@ -1651,42 +1651,43 @@
                     <h5 class="modal-title" id="generateReportModalLabel">Generate Report</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="reportForm">
-                        <div class="mb-3">
-                            <label for="reportType" class="form-label">Report Type *</label>
-                            <select class="form-select" id="reportType" required>
-                                <option value="" selected disabled>Select report type...</option>
-                                <option value="compliance">Compliance Report</option>
-                                <option value="maintenance">Maintenance Summary</option>
-                                <option value="monitoring">Monitoring Summary</option>
-                                <option value="health-trend">Ecosystem Health Trend</option>
-                                <option value="threat-management">Threat Management</option>
-                            </select>
-                            <div class="invalid-feedback">Please select a report type.</div>
-                        </div>
+<!-- In your generateReportModal, replace the existing form with this: -->
+<div class="modal-body">
+    <form id="reportForm">
+        <div class="mb-3">
+            <label for="reportType" class="form-label">Report Type *</label>
+            <select class="form-select" id="reportType" required>
+                <option value="" selected disabled>Select report type...</option>
+                <option value="compliance">Compliance Report</option>
+                <option value="maintenance">Maintenance Summary</option>
+                <option value="monitoring">Monitoring Summary</option>
+                <option value="health-trend">Ecosystem Health Trend</option>
+                <option value="threat-management">Threat Management</option>
+            </select>
+            <div class="invalid-feedback">Please select a report type.</div>
+        </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="reportStartDate" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="reportStartDate">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="reportEndDate" class="form-label">End Date</label>
-                                <input type="date" class="form-control" id="reportEndDate">
-                            </div>
-                        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="reportStartDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="reportStartDate">
+            </div>
+            <div class="col-md-6">
+                <label for="reportEndDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="reportEndDate">
+            </div>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="reportFormat" class="form-label">Format *</label>
-                            <select class="form-select" id="reportFormat" required>
-                                <option value="pdf" selected>PDF</option>
-                                <option value="excel">Excel</option>
-                                <option value="word">Word</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
+        <div class="mb-3">
+            <label for="reportFormat" class="form-label">Format *</label>
+            <select class="form-select" id="reportFormat" required>
+                <option value="pdf" selected>PDF Document</option>
+                <option value="excel">Excel Spreadsheet</option>
+                <option value="word">Word Document</option>
+            </select>
+        </div>
+    </form>
+</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" id="generateReportBtn">Generate</button>
@@ -1798,6 +1799,10 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
+<!-- Add these AFTER your existing CSS links -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // Data storage and management
         const db = {
@@ -3613,24 +3618,95 @@
         }
 
         // Generate report from modal
-        function generateReportFromModal() {
-            const type = document.getElementById('reportType').value;
-            if (!type) {
-                document.getElementById('reportType').classList.add('is-invalid');
-                return;
-            }
-            
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
-            const format = document.getElementById('reportFormat').value;
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('generateReportModal'));
-            if (modal) modal.hide();
-            
-            // Generate the report
-            generateReport(type);
+// Generate report from modal - REPLACE THE EXISTING FUNCTION
+function generateReportFromModal() {
+    const type = document.getElementById('reportType').value;
+    if (!type) {
+        document.getElementById('reportType').classList.add('is-invalid');
+        return;
+    }
+    
+    const startDate = document.getElementById('reportStartDate').value;
+    const endDate = document.getElementById('reportEndDate').value;
+    const format = document.getElementById('reportFormat').value;
+    
+    // Filter data by date range if provided
+    let reportData = [];
+    if (startDate && endDate) {
+        // Add date filtering logic here based on report type
+        reportData = filterDataByDate(type, startDate, endDate);
+    }
+    
+    const newReport = {
+        id: Date.now(),
+        type: type,
+        date: new Date().toISOString(),
+        generatedBy: db.settings.userProfile.name,
+        period: startDate && endDate ? `${formatDate(startDate)} to ${formatDate(endDate)}` : 'All time',
+        content: {
+            title: formatReportType(type),
+            body: `Report generated for ${db.settings.siteName}`,
+            data: reportData.length > 0 ? reportData : 
+                  type === 'maintenance' ? db.activities : 
+                  type === 'monitoring' ? db.monitoring :
+                  type === 'health-trend' ? db.assessments :
+                  type === 'threat-management' ? db.complianceChecklist : [],
+            progress: type === 'compliance' ? 
+                Math.round((db.complianceChecklist.filter(item => item.compliant === 'Yes').length / db.complianceChecklist.length) * 100) : null,
+            checklist: type === 'compliance' ? db.complianceChecklist : []
+        },
+        format: format,
+        createdAt: new Date().toISOString()
+    };
+    
+    db.reports.push(newReport);
+    if (saveData()) {
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('generateReportModal'));
+        if (modal) modal.hide();
+        
+        // Generate and download the report in selected format
+        if (format === 'pdf') {
+            generatePDFReport(newReport);
+        } else if (format === 'excel') {
+            generateExcelReport(newReport);
+        } else {
+            generateWordReport(newReport);
         }
+        
+        // Show success message
+        showToast('Success', `${formatReportType(type)} generated successfully!`);
+        
+        // Reload reports list
+        loadReports();
+    }
+}
+
+// Helper function to filter data by date
+function filterDataByDate(type, startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    switch(type) {
+        case 'maintenance':
+            return db.activities.filter(activity => {
+                const activityDate = new Date(activity.startDate);
+                return activityDate >= start && activityDate <= end;
+            });
+        case 'monitoring':
+            return db.monitoring.filter(record => {
+                const recordDate = new Date(record.date);
+                return recordDate >= start && recordDate <= end;
+            });
+        case 'health-trend':
+            return db.assessments.filter(assessment => {
+                const assessmentDate = new Date(assessment.date);
+                return assessmentDate >= start && assessmentDate <= end;
+            });
+        default:
+            return [];
+    }
+}
 
         // Show assessment details
         function showAssessmentDetails(assessment) {
@@ -4086,11 +4162,457 @@
         }
 
         // Download report
-        function downloadReport(report) {
-            // In a real app, this would generate a PDF or other format
-            // For demo, we'll just show a message
-            showToast('Info', 'Report download would be generated here in a real application', 'info');
+// Download report - REPLACE THE EXISTING PLACEHOLDER FUNCTION
+function downloadReport(report) {
+    const format = 'pdf'; // You can make this dynamic based on user selection
+    
+    try {
+        if (format === 'pdf') {
+            generatePDFReport(report);
+        } else if (format === 'excel') {
+            generateExcelReport(report);
+        } else {
+            generateWordReport(report); // Basic HTML export for Word
         }
+    } catch (error) {
+        console.error('Error generating report:', error);
+        showToast('Error', 'Failed to generate report. Please try again.', 'error');
+    }
+}
+
+// Generate PDF Report
+function generatePDFReport(report) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(20);
+    doc.setTextColor(40, 40, 40);
+    doc.text(report.content.title || 'Ecosystem Maintenance Report', 20, 30);
+    
+    // Add metadata
+    doc.setFontSize(12);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Generated on: ${formatDate(report.date)}`, 20, 50);
+    doc.text(`Generated by: ${report.generatedBy}`, 20, 60);
+    doc.text(`Site: ${db.settings.siteName}`, 20, 70);
+    
+    let yPosition = 90;
+    
+    // Report content based on type
+    switch(report.type) {
+        case 'compliance':
+            generateCompliancePDF(doc, report, yPosition);
+            break;
+        case 'maintenance':
+            generateMaintenancePDF(doc, report, yPosition);
+            break;
+        case 'monitoring':
+            generateMonitoringPDF(doc, report, yPosition);
+            break;
+        case 'health-trend':
+            generateHealthTrendPDF(doc, report, yPosition);
+            break;
+        case 'threat-management':
+            generateThreatManagementPDF(doc, report, yPosition);
+            break;
+        default:
+            generateGenericPDF(doc, report, yPosition);
+    }
+    
+    // Save the PDF
+    const fileName = `ecosystem-report-${report.type}-${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
+    
+    showToast('Success', 'PDF report generated successfully!');
+}
+
+// Generate Excel Report
+function generateExcelReport(report) {
+    const workbook = XLSX.utils.book_new();
+    
+    switch(report.type) {
+        case 'compliance':
+            generateComplianceExcel(workbook, report);
+            break;
+        case 'maintenance':
+            generateMaintenanceExcel(workbook, report);
+            break;
+        case 'monitoring':
+            generateMonitoringExcel(workbook, report);
+            break;
+        default:
+            generateGenericExcel(workbook, report);
+    }
+    
+    const fileName = `ecosystem-report-${report.type}-${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+    
+    showToast('Success', 'Excel report generated successfully!');
+}
+
+// Generate Word Report (basic HTML export)
+function generateWordReport(report) {
+    const htmlContent = generateWordHTML(report);
+    const blob = new Blob([htmlContent], { type: 'application/msword' });
+    const fileName = `ecosystem-report-${report.type}-${new Date().toISOString().split('T')[0]}.doc`;
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+    
+    showToast('Success', 'Word report generated successfully!');
+}
+
+// PDF Generator Functions
+function generateCompliancePDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Compliance Summary', 20, yPosition);
+    yPosition += 20;
+    
+    // Progress bar representation
+    const progress = report.content.progress || 0;
+    doc.setFillColor(200, 200, 200);
+    doc.rect(20, yPosition, 170, 10, 'F');
+    doc.setFillColor(40, 167, 69);
+    doc.rect(20, yPosition, (170 * progress) / 100, 10, 'F');
+    
+    doc.setFontSize(10);
+    doc.setTextColor(40, 40, 40);
+    doc.text(`Compliance Progress: ${progress}%`, 25, yPosition + 7);
+    yPosition += 25;
+    
+    // Checklist table
+    const tableData = report.content.checklist.map(item => [
+        item.requirement,
+        item.compliant || 'Not assessed',
+        item.evidence || 'None'
+    ]);
+    
+    doc.autoTable({
+        startY: yPosition,
+        head: [['Requirement', 'Status', 'Evidence']],
+        body: tableData,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [66, 139, 202] }
+    });
+}
+
+function generateMaintenancePDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Maintenance Activities', 20, yPosition);
+    yPosition += 20;
+    
+    const activities = report.content.data || db.activities;
+    const tableData = activities.map(activity => [
+        activity.title,
+        formatActivityType(activity.type),
+        formatDate(activity.startDate),
+        capitalizeFirstLetter(activity.status),
+        activity.assignedTo
+    ]);
+    
+    doc.autoTable({
+        startY: yPosition,
+        head: [['Activity', 'Type', 'Date', 'Status', 'Assigned To']],
+        body: tableData,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [40, 167, 69] }
+    });
+}
+
+function generateMonitoringPDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Monitoring Activities', 20, yPosition);
+    yPosition += 20;
+    
+    const monitoringData = report.content.data || db.monitoring;
+    const tableData = monitoringData.map(record => [
+        formatMonitoringType(record.type),
+        formatDate(record.date),
+        record.location,
+        record.observer,
+        record.findings.substring(0, 50) + (record.findings.length > 50 ? '...' : '')
+    ]);
+    
+    doc.autoTable({
+        startY: yPosition,
+        head: [['Type', 'Date', 'Location', 'Observer', 'Findings']],
+        body: tableData,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [255, 193, 7] }
+    });
+}
+
+function generateHealthTrendPDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Ecosystem Health Trends', 20, yPosition);
+    yPosition += 20;
+    
+    const assessments = report.content.data || db.assessments;
+    const tableData = assessments.map(assessment => [
+        formatDate(assessment.date),
+        assessment.assessor,
+        capitalizeFirstLetter(assessment.health),
+        assessment.threats.join(', ') || 'None',
+        assessment.components.join(', ')
+    ]);
+    
+    doc.autoTable({
+        startY: yPosition,
+        head: [['Date', 'Assessor', 'Health', 'Threats', 'Components']],
+        body: tableData,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [220, 53, 69] }
+    });
+}
+
+function generateThreatManagementPDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text('Threat Management Report', 20, yPosition);
+    yPosition += 20;
+    
+    // Analyze threats across assessments
+    const threatAnalysis = analyzeThreats();
+    const tableData = Object.entries(threatAnalysis).map(([threat, data]) => [
+        capitalizeFirstLetter(threat),
+        data.count,
+        data.assessments.join(', '),
+        data.recommendation
+    ]);
+    
+    doc.autoTable({
+        startY: yPosition,
+        head: [['Threat', 'Occurrences', 'Assessments', 'Recommendation']],
+        body: tableData,
+        theme: 'grid',
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [253, 126, 20] }
+    });
+}
+
+function generateGenericPDF(doc, report, yPosition) {
+    doc.setFontSize(16);
+    doc.setTextColor(40, 40, 40);
+    doc.text(report.content.title, 20, yPosition);
+    yPosition += 20;
+    
+    doc.setFontSize(12);
+    doc.setTextColor(80, 80, 80);
+    const splitText = doc.splitTextToSize(report.content.body, 170);
+    doc.text(splitText, 20, yPosition);
+}
+
+// Excel Generator Functions
+function generateComplianceExcel(workbook, report) {
+    const worksheet = XLSX.utils.aoa_to_sheet([
+        ['Compliance Report', '', '', ''],
+        ['Generated on:', formatDate(report.date), 'Generated by:', report.generatedBy],
+        ['Site:', db.settings.siteName, 'Compliance:', `${report.content.progress}%`],
+        [],
+        ['Requirement', 'Status', 'Evidence', 'Notes']
+    ]);
+    
+    report.content.checklist.forEach(item => {
+        XLSX.utils.sheet_add_aoa(worksheet, [[
+            item.requirement,
+            item.compliant || 'Not assessed',
+            item.evidence || 'None',
+            item.notes || ''
+        ]], { origin: -1 });
+    });
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Compliance');
+}
+
+function generateMaintenanceExcel(workbook, report) {
+    const data = [
+        ['Maintenance Activities Report', '', '', '', ''],
+        ['Generated on:', formatDate(report.date), 'Generated by:', report.generatedBy],
+        ['Site:', db.settings.siteName, 'Total Activities:', db.activities.length],
+        [],
+        ['Title', 'Type', 'Start Date', 'Status', 'Assigned To', 'Location', 'Priority']
+    ];
+    
+    const activities = report.content.data || db.activities;
+    activities.forEach(activity => {
+        data.push([
+            activity.title,
+            formatActivityType(activity.type),
+            formatDate(activity.startDate),
+            capitalizeFirstLetter(activity.status),
+            activity.assignedTo,
+            activity.location,
+            capitalizeFirstLetter(activity.priority)
+        ]);
+    });
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Maintenance');
+}
+
+function generateMonitoringExcel(workbook, report) {
+    const data = [
+        ['Monitoring Activities Report', '', '', '', ''],
+        ['Generated on:', formatDate(report.date), 'Generated by:', report.generatedBy],
+        ['Site:', db.settings.siteName, 'Total Records:', db.monitoring.length],
+        [],
+        ['Type', 'Date', 'Location', 'Observer', 'Findings', 'Species Count']
+    ];
+    
+    const monitoringData = report.content.data || db.monitoring;
+    monitoringData.forEach(record => {
+        data.push([
+            formatMonitoringType(record.type),
+            formatDate(record.date),
+            record.location,
+            record.observer,
+            record.findings.substring(0, 100) + (record.findings.length > 100 ? '...' : ''),
+            record.species ? record.species.length : 0
+        ]);
+    });
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Monitoring');
+}
+
+function generateGenericExcel(workbook, report) {
+    const worksheet = XLSX.utils.aoa_to_sheet([
+        [report.content.title],
+        ['Generated on:', formatDate(report.date)],
+        ['Generated by:', report.generatedBy],
+        ['Site:', db.settings.siteName],
+        [],
+        ['Description:', report.content.body]
+    ]);
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
+}
+
+// Word HTML Generator
+function generateWordHTML(report) {
+    return `
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>${report.content.title}</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+            .metadata { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+            th { background-color: #3498db; color: white; }
+            .progress-bar { background: #ecf0f1; height: 20px; border-radius: 10px; margin: 10px 0; }
+            .progress-fill { background: #27ae60; height: 100%; border-radius: 10px; }
+        </style>
+    </head>
+    <body>
+        <h1>${report.content.title}</h1>
+        
+        <div class="metadata">
+            <p><strong>Generated on:</strong> ${formatDate(report.date)}</p>
+            <p><strong>Generated by:</strong> ${report.generatedBy}</p>
+            <p><strong>Site:</strong> ${db.settings.siteName}</p>
+            ${report.content.progress ? `<p><strong>Compliance:</strong> ${report.content.progress}%</p>` : ''}
+        </div>
+        
+        ${generateWordContent(report)}
+        
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <p>Generated by EcoMaintain Tool - AHCECR301 Compliance System</p>
+        </footer>
+    </body>
+    </html>`;
+}
+
+function generateWordContent(report) {
+    switch(report.type) {
+        case 'compliance':
+            return generateComplianceWord(report);
+        case 'maintenance':
+            return generateMaintenanceWord(report);
+        case 'monitoring':
+            return generateMonitoringWord(report);
+        default:
+            return `<p>${report.content.body}</p>`;
+    }
+}
+
+function generateComplianceWord(report) {
+    let html = `
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: ${report.content.progress}%"></div>
+        </div>
+        <p>Overall Compliance: ${report.content.progress}%</p>
+        
+        <table>
+            <tr>
+                <th>Requirement</th>
+                <th>Status</th>
+                <th>Evidence</th>
+            </tr>
+    `;
+    
+    report.content.checklist.forEach(item => {
+        html += `
+            <tr>
+                <td>${item.requirement}</td>
+                <td>${item.compliant || 'Not assessed'}</td>
+                <td>${item.evidence || 'None provided'}</td>
+            </tr>
+        `;
+    });
+    
+    html += `</table>`;
+    return html;
+}
+
+// Helper function for threat analysis
+function analyzeThreats() {
+    const threatAnalysis = {};
+    
+    db.assessments.forEach(assessment => {
+        assessment.threats.forEach(threat => {
+            if (!threatAnalysis[threat]) {
+                threatAnalysis[threat] = {
+                    count: 0,
+                    assessments: [],
+                    recommendation: getThreatRecommendation(threat)
+                };
+            }
+            threatAnalysis[threat].count++;
+            threatAnalysis[threat].assessments.push(formatDate(assessment.date));
+        });
+    });
+    
+    return threatAnalysis;
+}
+
+function getThreatRecommendation(threat) {
+    const recommendations = {
+        'weeds': 'Implement integrated weed management program',
+        'pests': 'Develop pest management plan with monitoring',
+        'erosion': 'Install erosion control measures and revegetate',
+        'fire': 'Develop fire management plan and fuel reduction strategy',
+        'climate': 'Implement climate adaptation measures',
+        'development': 'Establish buffer zones and impact mitigation',
+        'recreation': 'Manage visitor access and install signage',
+        'grazing': 'Control grazing pressure and install fencing'
+    };
+    
+    return recommendations[threat] || 'Develop specific management strategy';
+}
 
         // Show confirmation dialog
         function showConfirmation(title, message, confirmCallback) {
