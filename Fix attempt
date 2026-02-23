@@ -17,7 +17,6 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
     
-    <!-- ADD MISSING LIBRARIES -->
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
@@ -88,6 +87,44 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(0, 0, 0, 0.2);
             letter-spacing: 1px;
+        }
+        
+        /* Site Selector */
+        .site-selector {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .site-selector .form-select {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        .site-selector .form-select option {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .site-selector .btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .site-selector .btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .site-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
         
         /* Main Content */
@@ -529,6 +566,21 @@
                     EcoMaintain
                 </div>
                 
+                <!-- Site Selector -->
+                <div class="site-selector">
+                    <div class="d-flex align-items-center gap-2">
+                        <select class="form-select form-select-sm" id="siteSelector" aria-label="Select site">
+                            <option value="">Loading sites...</option>
+                        </select>
+                        <button class="btn btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalManageSites" title="Manage Sites">
+                            <i class="bi bi-gear"></i>
+                        </button>
+                    </div>
+                    <div class="mt-2 small text-white-50" id="currentSiteInfo">
+                        <span id="currentSiteName"></span>
+                    </div>
+                </div>
+                
                 <ul class="nav flex-column p-3" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" 
@@ -592,15 +644,14 @@
                             <span>Legislation</span>
                         </button>
                     </li>
-                    
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="alert('User Guide would open here'); return false;" 
-                           rel="noopener noreferrer" aria-label="User Guide">
-                            <i class="bi bi-question-circle" aria-hidden="true"></i>
-                            <span>User Guide</span>
-                            <i class="bi bi-box-arrow-up-right ms-auto" aria-hidden="true" style="font-size: 0.8rem;"></i>
-                        </a>
-                    </li>
+    <a class="nav-link" href="UserGuide.html" target="_blank" 
+       rel="noopener noreferrer" aria-label="User Guide (opens in new tab)">
+        <i class="bi bi-question-circle" aria-hidden="true"></i>
+        <span>User Guide</span>
+        <i class="bi bi-box-arrow-up-right ms-auto" aria-hidden="true" style="font-size: 0.8rem;"></i>
+    </a>
+</li>
                     
                     <li class="nav-item mt-4" role="presentation">
                         <button class="nav-link" id="settings-tab" data-bs-toggle="tab" 
@@ -621,7 +672,10 @@
                          aria-labelledby="dashboard-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Native Ecosystem Maintenance Dashboard</h1>
+                            <h1 class="h2">
+                                <span id="dashboardSiteName">Native Ecosystem Maintenance Dashboard</span>
+                                <span class="site-badge ms-2" id="dashboardSiteBadge"></span>
+                            </h1>
                             
                             <div class="btn-toolbar mb-2 mb-md-0" role="toolbar" aria-label="Dashboard actions">
                                 <div class="btn-group me-2" role="group">
@@ -816,7 +870,10 @@
                          aria-labelledby="assessment-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Site Assessment</h1>
+                            <h1 class="h2">
+                                Site Assessment
+                                <span class="site-badge ms-2" id="assessmentSiteBadge"></span>
+                            </h1>
                             
                             <button type="button" class="btn btn-sm btn-success" 
                                     data-bs-toggle="modal" data-bs-target="#modalNewAssessment"
@@ -863,7 +920,10 @@
                          aria-labelledby="maintenance-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Maintenance Plan</h1>
+                            <h1 class="h2">
+                                Maintenance Plan
+                                <span class="site-badge ms-2" id="maintenanceSiteBadge"></span>
+                            </h1>
                             
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <button type="button" class="btn btn-sm btn-success" 
@@ -1019,7 +1079,10 @@
                          aria-labelledby="species-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Species Register</h1>
+                            <h1 class="h2">
+                                Species Register
+                                <span class="site-badge ms-2" id="speciesSiteBadge"></span>
+                            </h1>
                             
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <div class="btn-group me-2" role="group">
@@ -1088,7 +1151,10 @@
                          aria-labelledby="monitoring-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Monitoring</h1>
+                            <h1 class="h2">
+                                Monitoring
+                                <span class="site-badge ms-2" id="monitoringSiteBadge"></span>
+                            </h1>
                             
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <button type="button" class="btn btn-sm btn-success" 
@@ -1187,7 +1253,10 @@
                          aria-labelledby="reports-tab" tabindex="0">
                         
                         <header class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">Reports</h1>
+                            <h1 class="h2">
+                                Reports
+                                <span class="site-badge ms-2" id="reportsSiteBadge"></span>
+                            </h1>
                             
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <button type="button" class="btn btn-sm btn-primary" 
@@ -1467,12 +1536,12 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <!-- User Profile -->
+                                <!-- User Profile (Global) -->
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
                                             <i class="bi bi-person-circle me-2" aria-hidden="true"></i>
-                                            User Profile
+                                            User Profile (Global)
                                         </h5>
                                         
                                         <form id="settingsUserProfileForm" novalidate>
@@ -1508,52 +1577,31 @@
                                     </div>
                                 </div>
 
-                                <!-- Site Settings -->
+                                <!-- Site Management -->
                                 <div class="card mt-4">
                                     <div class="card-body">
                                         <h5 class="card-title">
                                             <i class="bi bi-geo-alt me-2" aria-hidden="true"></i>
-                                            Site Settings
+                                            Site Management
                                         </h5>
                                         
-                                        <form id="settingsSiteForm" novalidate>
-                                            <div class="mb-3">
-                                                <label for="settingsSiteName" class="form-label">Site Name *</label>
-                                                <input type="text" class="form-control" id="settingsSiteName" required>
-                                                <div class="invalid-feedback">Please provide a site name.</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="settingsSiteLocation" class="form-label">Location *</label>
-                                                <input type="text" class="form-control" id="settingsSiteLocation" required>
-                                                <div class="invalid-feedback">Please provide the site location.</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="settingsSiteArea" class="form-label">Area (hectares) *</label>
-                                                <input type="number" class="form-control" id="settingsSiteArea" 
-                                                       required min="0" step="0.1">
-                                                <div class="invalid-feedback">Please provide a valid area.</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="settingsSiteDescription" class="form-label">Description *</label>
-                                                <textarea class="form-control" id="settingsSiteDescription" 
-                                                          rows="3" required></textarea>
-                                                <div class="invalid-feedback">Please provide a site description.</div>
-                                            </div>
-                                            
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                                Update Site Details
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalManageSites">
+                                                <i class="bi bi-building me-2" aria-hidden="true"></i>
+                                                Manage Sites
                                             </button>
-                                        </form>
+                                            
+                                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalNewSite">
+                                                <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+                                                Add New Site
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <!-- Change Password -->
+                                <!-- Change Password (Global) -->
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
@@ -1626,7 +1674,7 @@
                                         
                                         <dl class="row mb-0">
                                             <dt class="col-sm-5">Version</dt>
-                                            <dd class="col-sm-7">1.0.0</dd>
+                                            <dd class="col-sm-7">1.0.0 (Multi-site)</dd>
                                             
                                             <dt class="col-sm-5">Last Backup</dt>
                                             <dd class="col-sm-7" id="lastBackupInfo">Never</dd>
@@ -1636,6 +1684,9 @@
                                             
                                             <dt class="col-sm-5">Records Count</dt>
                                             <dd class="col-sm-7" id="recordsCount">0</dd>
+                                            
+                                            <dt class="col-sm-5">Sites Count</dt>
+                                            <dd class="col-sm-7" id="sitesCount">0</dd>
                                         </dl>
                                     </div>
                                 </div>
@@ -1649,6 +1700,234 @@
 
     <!-- ============================ MODALS ============================ -->
 
+    <!-- Manage Sites Modal -->
+    <div class="modal fade" id="modalManageSites" tabindex="-1" aria-labelledby="modalManageSitesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalManageSitesLabel">
+                        <i class="bi bi-building me-2" aria-hidden="true"></i>
+                        Manage Sites
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="sitesTable">
+                            <thead>
+                                <tr>
+                                    <th>Site Name</th>
+                                    <th>Location</th>
+                                    <th>Area (ha)</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sites will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="empty-state" id="noSitesMessage" style="display: none;">
+                        <i class="bi bi-building"></i>
+                        <p>No sites created yet</p>
+                        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNewSite">
+                            Create First Site
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNewSite">
+                        <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+                        New Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Site Modal -->
+    <div class="modal fade" id="modalNewSite" tabindex="-1" aria-labelledby="modalNewSiteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNewSiteLabel">
+                        <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+                        Add New Site
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="formNewSite" novalidate>
+                        <div class="mb-3">
+                            <label for="siteName" class="form-label">Site Name *</label>
+                            <input type="text" class="form-control" id="siteName" required maxlength="100">
+                            <div class="invalid-feedback">Please provide a site name.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="siteLocation" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="siteLocation" required maxlength="200">
+                            <div class="invalid-feedback">Please provide the site location.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="siteArea" class="form-label">Area (hectares) *</label>
+                            <input type="number" class="form-control" id="siteArea" required min="0" step="0.1">
+                            <div class="invalid-feedback">Please provide a valid area.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="siteDescription" class="form-label">Description *</label>
+                            <textarea class="form-control" id="siteDescription" rows="3" required maxlength="1000"></textarea>
+                            <div class="invalid-feedback">Please provide a site description.</div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveSiteBtn">
+                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                        Save Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Site Modal -->
+    <div class="modal fade" id="modalEditSite" tabindex="-1" aria-labelledby="modalEditSiteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditSiteLabel">
+                        <i class="bi bi-pencil me-2" aria-hidden="true"></i>
+                        Edit Site
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="formEditSite" novalidate>
+                        <input type="hidden" id="editSiteId">
+                        
+                        <div class="mb-3">
+                            <label for="editSiteName" class="form-label">Site Name *</label>
+                            <input type="text" class="form-control" id="editSiteName" required maxlength="100">
+                            <div class="invalid-feedback">Please provide a site name.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editSiteLocation" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="editSiteLocation" required maxlength="200">
+                            <div class="invalid-feedback">Please provide the site location.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editSiteArea" class="form-label">Area (hectares) *</label>
+                            <input type="number" class="form-control" id="editSiteArea" required min="0" step="0.1">
+                            <div class="invalid-feedback">Please provide a valid area.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editSiteDescription" class="form-label">Description *</label>
+                            <textarea class="form-control" id="editSiteDescription" rows="3" required maxlength="1000"></textarea>
+                            <div class="invalid-feedback">Please provide a site description.</div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="updateSiteBtn">
+                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                        Update Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Site Confirmation Modal -->
+    <div class="modal fade" id="modalDeleteSite" tabindex="-1" aria-labelledby="modalDeleteSiteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeleteSiteLabel">
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                        Delete Site
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <input type="hidden" id="deleteSiteId">
+                    <p>Are you sure you want to delete <strong id="deleteSiteName"></strong>?</p>
+                    <p class="text-danger">This will permanently delete all data associated with this site (assessments, species, activities, etc.). This action cannot be undone.</p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteSiteBtn">
+                        <i class="bi bi-trash me-2" aria-hidden="true"></i>
+                        Delete Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Switch Confirmation Modal -->
+    <div class="modal fade" id="modalSwitchSite" tabindex="-1" aria-labelledby="modalSwitchSiteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSwitchSiteLabel">
+                        <i class="bi bi-arrow-repeat me-2" aria-hidden="true"></i>
+                        Switch Site
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <input type="hidden" id="switchTargetSiteId">
+                    <p>Switch to <strong id="switchTargetSiteName"></strong>?</p>
+                    <p>All data will be saved automatically before switching.</p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="confirmSwitchSiteBtn">
+                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                        Switch Site
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All existing modals (New Activity, New Assessment, New Species, etc.) remain exactly the same -->
     <!-- New Activity Modal -->
     <div class="modal fade" id="modalNewActivity" tabindex="-1" aria-labelledby="modalNewActivityLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -1663,6 +1942,8 @@
                 
                 <div class="modal-body">
                     <form id="formNewActivity" novalidate>
+                        <input type="hidden" id="activitySiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="activityType" class="form-label">Activity Type *</label>
@@ -1770,6 +2051,8 @@
                 
                 <div class="modal-body">
                     <form id="formNewAssessment" novalidate>
+                        <input type="hidden" id="assessmentSiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="modalAssessmentDate" class="form-label">Assessment Date *</label>
@@ -1890,6 +2173,8 @@
                 
                 <div class="modal-body">
                     <form id="formNewSpecies" novalidate>
+                        <input type="hidden" id="speciesSiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="speciesScientificName" class="form-label">Scientific Name *</label>
@@ -1987,6 +2272,8 @@
                 
                 <div class="modal-body">
                     <form id="formNewMonitoring" novalidate>
+                        <input type="hidden" id="monitoringSiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="monitoringType" class="form-label">Monitoring Type *</label>
@@ -2075,6 +2362,8 @@
                 
                 <div class="modal-body">
                     <form id="formFaunaSighting" novalidate>
+                        <input type="hidden" id="faunaSiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="faunaSpecies" class="form-label">Species *</label>
@@ -2154,6 +2443,8 @@
                 
                 <div class="modal-body">
                     <form id="formVegetationSurvey" novalidate>
+                        <input type="hidden" id="vegetationSiteId">
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="vegetationDate" class="form-label">Date *</label>
@@ -2497,7 +2788,8 @@
                 FAUNA_SIGHTINGS: 'ecosystem_fauna_sightings',
                 VEGETATION_SURVEYS: 'ecosystem_vegetation_surveys',
                 COMPLIANCE: 'ecosystem_compliance',
-                SETTINGS: 'ecosystem_settings'
+                SETTINGS: 'ecosystem_settings',
+                SITES: 'ecosystem_sites'
             };
 
             const HEALTH_RATINGS = ['excellent', 'good', 'fair', 'poor', 'degraded'];
@@ -2520,17 +2812,15 @@
                     { id: 4, requirement: "Implemented required protections", compliant: "", evidence: "", notes: "" },
                     { id: 5, requirement: "Maintained required records", compliant: "", evidence: "", notes: "" }
                 ],
+                sites: [],
                 settings: {
-                    siteName: "Blue Mountains Conservation Area",
-                    siteLocation: "NSW, Australia",
-                    siteArea: 125,
-                    siteDescription: "Mixed eucalypt forest with significant biodiversity values including several threatened species.",
                     userProfile: {
                         name: "John Doe",
                         email: "john.doe@example.com",
                         role: "ecologist"
                     }
-                }
+                },
+                currentSiteId: null
             };
 
             // ==================== UTILITY FUNCTIONS ====================
@@ -2558,6 +2848,7 @@
                         localStorage.setItem(STORAGE_KEYS.VEGETATION_SURVEYS, JSON.stringify(db.vegetationSurveys));
                         localStorage.setItem(STORAGE_KEYS.COMPLIANCE, JSON.stringify(db.complianceChecklist));
                         localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(db.settings));
+                        localStorage.setItem(STORAGE_KEYS.SITES, JSON.stringify(db.sites));
                         return true;
                     } catch (e) {
                         console.error('Error saving data:', e);
@@ -2577,6 +2868,7 @@
                     db.vegetationSurveys = this.parseJSON(STORAGE_KEYS.VEGETATION_SURVEYS, []);
                     db.complianceChecklist = this.parseJSON(STORAGE_KEYS.COMPLIANCE, db.complianceChecklist);
                     db.settings = this.parseJSON(STORAGE_KEYS.SETTINGS, db.settings);
+                    db.sites = this.parseJSON(STORAGE_KEYS.SITES, []);
                 },
 
                 // Sanitize HTML to prevent XSS
@@ -2699,14 +2991,324 @@
                             }
                         });
                     }
+                },
+
+                // Filter data by current site
+                filterByCurrentSite: function(data) {
+                    if (!db.currentSiteId) return [];
+                    return data.filter(item => item.siteId === db.currentSiteId);
+                },
+
+                // Get current site
+                getCurrentSite: function() {
+                    return db.sites.find(site => site.id === db.currentSiteId);
                 }
             };
 
-            // ==================== CORE FUNCTIONS ====================
+            // ==================== SITE MANAGEMENT FUNCTIONS ====================
+            const SiteManager = {
+                // Initialize sites
+                initSites: function() {
+                    // Migrate old data if needed
+                    const oldSettings = Utils.parseJSON(STORAGE_KEYS.SETTINGS, null);
+                    
+                    if (db.sites.length === 0 && oldSettings && oldSettings.siteName) {
+                        // Create default site from old settings
+                        const defaultSite = {
+                            id: Utils.generateId(),
+                            name: oldSettings.siteName || "Default Site",
+                            location: oldSettings.siteLocation || "Unknown",
+                            area: oldSettings.siteArea || 0,
+                            description: oldSettings.siteDescription || "",
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        db.sites.push(defaultSite);
+                        
+                        // Assign all existing records to default site
+                        const siteId = defaultSite.id;
+                        
+                        db.assessments = db.assessments.map(item => ({ ...item, siteId }));
+                        db.species = db.species.map(item => ({ ...item, siteId }));
+                        db.activities = db.activities.map(item => ({ ...item, siteId }));
+                        db.monitoring = db.monitoring.map(item => ({ ...item, siteId }));
+                        db.reports = db.reports.map(item => ({ ...item, siteId }));
+                        db.faunaSightings = db.faunaSightings.map(item => ({ ...item, siteId }));
+                        db.vegetationSurveys = db.vegetationSurveys.map(item => ({ ...item, siteId }));
+                        
+                        db.currentSiteId = siteId;
+                        
+                        Utils.saveData();
+                    } else if (db.sites.length > 0 && !db.currentSiteId) {
+                        // Set current site to first site
+                        db.currentSiteId = db.sites[0].id;
+                    }
+                    
+                    this.loadSiteSelector();
+                },
+
+                // Load site selector dropdown
+                loadSiteSelector: function() {
+                    const selector = document.getElementById('siteSelector');
+                    const currentSiteName = document.getElementById('currentSiteName');
+                    
+                    if (!selector) return;
+                    
+                    selector.innerHTML = '';
+                    
+                    if (db.sites.length === 0) {
+                        selector.innerHTML = '<option value="">No sites</option>';
+                        if (currentSiteName) currentSiteName.textContent = 'No site selected';
+                        return;
+                    }
+                    
+                    db.sites.forEach(site => {
+                        const option = document.createElement('option');
+                        option.value = site.id;
+                        option.textContent = site.name;
+                        if (site.id === db.currentSiteId) {
+                            option.selected = true;
+                            if (currentSiteName) currentSiteName.textContent = site.name;
+                            
+                            // Update all site badges
+                            document.querySelectorAll('.site-badge').forEach(badge => {
+                                badge.textContent = site.name;
+                            });
+                            
+                            // Update site name in headers
+                            document.getElementById('dashboardSiteName').textContent = site.name;
+                        }
+                        selector.appendChild(option);
+                    });
+                    
+                    this.updateSitesTable();
+                },
+
+                // Update sites table in manage sites modal
+                updateSitesTable: function() {
+                    const table = document.getElementById('sitesTable');
+                    const noSitesMsg = document.getElementById('noSitesMessage');
+                    
+                    if (!table) return;
+                    
+                    const tbody = table.querySelector('tbody');
+                    if (!tbody) return;
+                    
+                    tbody.innerHTML = '';
+                    
+                    if (db.sites.length === 0) {
+                        table.style.display = 'none';
+                        if (noSitesMsg) noSitesMsg.style.display = 'block';
+                        return;
+                    }
+                    
+                    table.style.display = 'table';
+                    if (noSitesMsg) noSitesMsg.style.display = 'none';
+                    
+                    db.sites.forEach(site => {
+                        const row = tbody.insertRow();
+                        
+                        // Count records for this site
+                        const recordCount = db.assessments.filter(a => a.siteId === site.id).length +
+                                           db.species.filter(s => s.siteId === site.id).length +
+                                           db.activities.filter(a => a.siteId === site.id).length +
+                                           db.monitoring.filter(m => m.siteId === site.id).length;
+                        
+                        row.innerHTML = `
+                            <td>${Utils.sanitizeHTML(site.name)}</td>
+                            <td>${Utils.sanitizeHTML(site.location)}</td>
+                            <td>${site.area} ha</td>
+                            <td>${Utils.formatDate(site.createdAt)}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-outline-primary edit-site" data-id="${site.id}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-site" data-id="${site.id}" data-name="${Utils.sanitizeHTML(site.name)}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    ${site.id !== db.currentSiteId ? `
+                                    <button class="btn btn-sm btn-outline-success switch-to-site" data-id="${site.id}" data-name="${Utils.sanitizeHTML(site.name)}">
+                                        <i class="bi bi-arrow-right-circle"></i>
+                                    </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        `;
+                    });
+                    
+                    // Add event listeners
+                    document.querySelectorAll('.edit-site').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const id = parseInt(btn.dataset.id);
+                            const site = db.sites.find(s => s.id === id);
+                            if (site) this.showEditSiteModal(site);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.delete-site').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const id = parseInt(btn.dataset.id);
+                            const name = btn.dataset.name;
+                            this.confirmDeleteSite(id, name);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.switch-to-site').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const id = parseInt(btn.dataset.id);
+                            const name = btn.dataset.name;
+                            this.promptSwitchSite(id, name);
+                        });
+                    });
+                },
+
+                // Show edit site modal
+                showEditSiteModal: function(site) {
+                    document.getElementById('editSiteId').value = site.id;
+                    document.getElementById('editSiteName').value = site.name;
+                    document.getElementById('editSiteLocation').value = site.location;
+                    document.getElementById('editSiteArea').value = site.area;
+                    document.getElementById('editSiteDescription').value = site.description;
+                    
+                    new bootstrap.Modal(document.getElementById('modalEditSite')).show();
+                },
+
+                // Update site
+                updateSite: function() {
+                    const form = document.getElementById('formEditSite');
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                        return;
+                    }
+                    
+                    const id = parseInt(document.getElementById('editSiteId').value);
+                    const site = db.sites.find(s => s.id === id);
+                    
+                    if (site) {
+                        site.name = document.getElementById('editSiteName').value;
+                        site.location = document.getElementById('editSiteLocation').value;
+                        site.area = parseFloat(document.getElementById('editSiteArea').value);
+                        site.description = document.getElementById('editSiteDescription').value;
+                        
+                        if (Utils.saveData()) {
+                            form.reset();
+                            form.classList.remove('was-validated');
+                            bootstrap.Modal.getInstance(document.getElementById('modalEditSite')).hide();
+                            Utils.showToast('Success', 'Site updated successfully');
+                            
+                            this.loadSiteSelector();
+                            
+                            // If current site was updated, refresh UI
+                            if (id === db.currentSiteId) {
+                                App.loadAllData();
+                            }
+                        }
+                    }
+                },
+
+                // Save new site
+                saveSite: function() {
+                    const form = document.getElementById('formNewSite');
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                        return;
+                    }
+                    
+                    const newSite = {
+                        id: Utils.generateId(),
+                        name: document.getElementById('siteName').value,
+                        location: document.getElementById('siteLocation').value,
+                        area: parseFloat(document.getElementById('siteArea').value),
+                        description: document.getElementById('siteDescription').value,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    db.sites.push(newSite);
+                    
+                    if (Utils.saveData()) {
+                        form.reset();
+                        form.classList.remove('was-validated');
+                        bootstrap.Modal.getInstance(document.getElementById('modalNewSite')).hide();
+                        Utils.showToast('Success', 'Site created successfully');
+                        
+                        this.loadSiteSelector();
+                        
+                        // If this is the first site, set as current
+                        if (db.sites.length === 1) {
+                            db.currentSiteId = newSite.id;
+                            this.loadSiteSelector();
+                            App.loadAllData();
+                        }
+                    }
+                },
+
+                // Confirm delete site
+                confirmDeleteSite: function(siteId, siteName) {
+                    Utils.showConfirmation(
+                        'Delete Site',
+                        `Are you sure you want to delete "${siteName}"? This will permanently delete all data associated with this site.`,
+                        () => this.deleteSite(siteId)
+                    );
+                },
+
+                // Delete site
+                deleteSite: function(siteId) {
+                    // Remove site from array
+                    db.sites = db.sites.filter(s => s.id !== siteId);
+                    
+                    // Remove all data associated with this site
+                    db.assessments = db.assessments.filter(a => a.siteId !== siteId);
+                    db.species = db.species.filter(s => s.siteId !== siteId);
+                    db.activities = db.activities.filter(a => a.siteId !== siteId);
+                    db.monitoring = db.monitoring.filter(m => m.siteId !== siteId);
+                    db.reports = db.reports.filter(r => r.siteId !== siteId);
+                    db.faunaSightings = db.faunaSightings.filter(f => f.siteId !== siteId);
+                    db.vegetationSurveys = db.vegetationSurveys.filter(v => v.siteId !== siteId);
+                    
+                    // If current site was deleted, switch to another site
+                    if (db.currentSiteId === siteId) {
+                        db.currentSiteId = db.sites.length > 0 ? db.sites[0].id : null;
+                    }
+                    
+                    if (Utils.saveData()) {
+                        Utils.showToast('Success', 'Site deleted successfully');
+                        this.loadSiteSelector();
+                        App.loadAllData();
+                    }
+                },
+
+                // Prompt switch site
+                promptSwitchSite: function(siteId, siteName) {
+                    document.getElementById('switchTargetSiteId').value = siteId;
+                    document.getElementById('switchTargetSiteName').textContent = siteName;
+                    new bootstrap.Modal(document.getElementById('modalSwitchSite')).show();
+                },
+
+                // Switch site
+                switchSite: function(siteId) {
+                    // Save current data first
+                    Utils.saveData();
+                    
+                    db.currentSiteId = siteId;
+                    
+                    // Update UI
+                    this.loadSiteSelector();
+                    App.loadAllData();
+                    
+                    // Hide modal
+                    bootstrap.Modal.getInstance(document.getElementById('modalSwitchSite')).hide();
+                    
+                    Utils.showToast('Success', 'Switched to ' + db.sites.find(s => s.id === siteId).name);
+                }
+            };
+
+            // ==================== CORE FUNCTIONS (Modified for multi-site) ====================
             const App = {
                 // Initialize the application
                 init: function() {
                     Utils.loadData();
+                    SiteManager.initSites();
                     this.loadInitialData();
                     
                     // Wait for DOM and libraries to load
@@ -2714,25 +3316,52 @@
                         this.initCharts();
                         this.initMap();
                         this.initCalendar();
-                        this.loadDashboard();
-                        this.loadAssessments();
-                        this.loadSpecies();
-                        this.loadActivities();
-                        this.loadMonitoring();
-                        this.loadReports();
-                        this.loadComplianceChecklist();
-                        this.loadSettings();
+                        this.loadAllData();
                         this.setupEventListeners();
                         this.updateStorageInfo();
                     }, 500);
                 },
 
-                // Load initial test data if empty
+                // Load all data for current site
+                loadAllData: function() {
+                    this.loadDashboard();
+                    this.loadAssessments();
+                    this.loadSpecies();
+                    this.loadActivities();
+                    this.loadMonitoring();
+                    this.loadReports();
+                    this.loadComplianceChecklist();
+                    this.loadSettings();
+                    
+                    // Refresh calendar
+                    if (window.calendar) {
+                        window.calendar.refetchEvents();
+                    }
+                },
+
+                // Load initial test data if empty (with site IDs)
                 loadInitialData: function() {
+                    if (db.sites.length === 0) {
+                        // Create default site
+                        const defaultSite = {
+                            id: Utils.generateId(),
+                            name: "Blue Mountains Conservation Area",
+                            location: "NSW, Australia",
+                            area: 125,
+                            description: "Mixed eucalypt forest with significant biodiversity values including several threatened species.",
+                            createdAt: new Date().toISOString()
+                        };
+                        db.sites.push(defaultSite);
+                        db.currentSiteId = defaultSite.id;
+                    }
+                    
+                    const siteId = db.currentSiteId || (db.sites.length > 0 ? db.sites[0].id : null);
+                    
                     if (db.assessments.length === 0) {
                         db.assessments = [
                             {
                                 id: 1,
+                                siteId: siteId,
                                 date: '2023-06-15',
                                 assessor: 'Jane Doe',
                                 description: 'Initial assessment of the northern section of the conservation area. Found healthy native vegetation but some weed infestations.',
@@ -2744,6 +3373,7 @@
                             },
                             {
                                 id: 2,
+                                siteId: siteId,
                                 date: '2023-03-02',
                                 assessor: 'John Smith',
                                 description: 'Quarterly assessment of the entire site. Noted increased weed coverage in Zone 3.',
@@ -2760,6 +3390,7 @@
                         db.species = [
                             {
                                 id: 1,
+                                siteId: siteId,
                                 scientificName: 'Eucalyptus pauciflora',
                                 commonName: 'Snow Gum',
                                 type: 'flora',
@@ -2773,6 +3404,7 @@
                             },
                             {
                                 id: 2,
+                                siteId: siteId,
                                 scientificName: 'Rubus fruticosus',
                                 commonName: 'Blackberry',
                                 type: 'flora',
@@ -2786,6 +3418,7 @@
                             },
                             {
                                 id: 3,
+                                siteId: siteId,
                                 scientificName: 'Phascolarctos cinereus',
                                 commonName: 'Koala',
                                 type: 'fauna',
@@ -2804,9 +3437,10 @@
                         db.activities = [
                             {
                                 id: 1,
+                                siteId: siteId,
                                 type: 'weed-control',
                                 title: 'Weed Control - Blackberry',
-                                startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+                                startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
                                 endDate: null,
                                 location: 'Zone 3',
                                 description: 'Target species: Blackberry. Manual removal and herbicide application.',
@@ -2818,6 +3452,7 @@
                             },
                             {
                                 id: 2,
+                                siteId: siteId,
                                 type: 'fauna-survey',
                                 title: 'Fauna Survey - Eastern Zone',
                                 startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
@@ -2832,6 +3467,7 @@
                             },
                             {
                                 id: 3,
+                                siteId: siteId,
                                 type: 'revegetation',
                                 title: 'Revegetation Planting',
                                 startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
@@ -2846,6 +3482,7 @@
                             },
                             {
                                 id: 4,
+                                siteId: siteId,
                                 type: 'erosion-control',
                                 title: 'Erosion Control - North Bank',
                                 startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -2865,6 +3502,7 @@
                         db.monitoring = [
                             {
                                 id: 1,
+                                siteId: siteId,
                                 type: 'vegetation-survey',
                                 date: '2023-06-15',
                                 location: 'Zone 1',
@@ -2877,6 +3515,7 @@
                             },
                             {
                                 id: 2,
+                                siteId: siteId,
                                 type: 'fauna-survey',
                                 date: '2023-06-12',
                                 location: 'Eastern Zone',
@@ -2894,13 +3533,14 @@
                         db.reports = [
                             {
                                 id: 1,
+                                siteId: siteId,
                                 type: 'compliance',
                                 date: new Date().toISOString(),
                                 generatedBy: 'Jane Doe',
                                 period: 'All time',
                                 content: {
                                     title: 'Compliance Report',
-                                    body: 'Report generated for Blue Mountains Conservation Area',
+                                    body: 'Report generated for ' + (Utils.getCurrentSite()?.name || 'site'),
                                     progress: 60,
                                     checklist: db.complianceChecklist
                                 },
@@ -2919,17 +3559,21 @@
                         let totalSize = 0;
                         Object.keys(STORAGE_KEYS).forEach(key => {
                             const item = localStorage.getItem(STORAGE_KEYS[key]);
-                            if (item) totalSize += item.length * 2; // Approximate size in bytes
+                            if (item) totalSize += item.length * 2;
                         });
 
-                        const recordsCount = db.assessments.length + db.species.length + db.activities.length + 
-                                            db.monitoring.length + db.reports.length;
+                        const currentSiteData = Utils.filterByCurrentSite(db.assessments).length +
+                                               Utils.filterByCurrentSite(db.species).length +
+                                               Utils.filterByCurrentSite(db.activities).length +
+                                               Utils.filterByCurrentSite(db.monitoring).length +
+                                               Utils.filterByCurrentSite(db.reports).length;
 
                         document.getElementById('storageUsed').textContent = 
                             totalSize > 1024 * 1024 ? `${(totalSize / (1024 * 1024)).toFixed(2)} MB` :
                             totalSize > 1024 ? `${(totalSize / 1024).toFixed(2)} KB` : `${totalSize} bytes`;
                         
-                        document.getElementById('recordsCount').textContent = recordsCount;
+                        document.getElementById('recordsCount').textContent = currentSiteData;
+                        document.getElementById('sitesCount').textContent = db.sites.length;
                         document.getElementById('lastBackupInfo').textContent = 
                             localStorage.getItem('lastBackup') || 'Never';
                     } catch (e) {
@@ -2937,7 +3581,7 @@
                     }
                 },
 
-                // ==================== CHART FUNCTIONS ====================
+                // ==================== CHART FUNCTIONS (Unchanged) ====================
                 initCharts: function() {
                     // Health Chart
                     const healthCtx = document.getElementById('healthChart');
@@ -3072,7 +3716,7 @@
                     }
                 },
 
-                // ==================== MAP FUNCTIONS ====================
+                // ==================== MAP FUNCTIONS (Unchanged) ====================
                 initMap: function() {
                     const mapElement = document.getElementById('map');
                     if (!mapElement) return;
@@ -3164,7 +3808,7 @@
                     }
                 },
 
-                // ==================== CALENDAR FUNCTIONS ====================
+                // ==================== CALENDAR FUNCTIONS (Modified for multi-site) ====================
                 initCalendar: function() {
                     const calendarEl = document.getElementById('calendar');
                     if (!calendarEl) return;
@@ -3175,7 +3819,7 @@
                             return;
                         }
 
-                        const events = db.activities.map(activity => ({
+                        const events = Utils.filterByCurrentSite(db.activities).map(activity => ({
                             id: activity.id.toString(),
                             title: activity.title,
                             start: activity.startDate,
@@ -3234,13 +3878,19 @@
                     return colors[type] || '#6c757d';
                 },
 
-                // ==================== DASHBOARD FUNCTIONS ====================
+                // ==================== DASHBOARD FUNCTIONS (Modified for multi-site) ====================
                 loadDashboard: function() {
+                    const currentSite = Utils.getCurrentSite();
+                    const filteredAssessments = Utils.filterByCurrentSite(db.assessments);
+                    const filteredSpecies = Utils.filterByCurrentSite(db.species);
+                    const filteredActivities = Utils.filterByCurrentSite(db.activities);
+                    const filteredMonitoring = Utils.filterByCurrentSite(db.monitoring);
+
                     // Update stats
-                    const upcomingTasks = db.activities.filter(a => a.status !== 'completed' && a.status !== 'cancelled');
+                    const upcomingTasks = filteredActivities.filter(a => a.status !== 'completed' && a.status !== 'cancelled');
                     document.getElementById('totalTasks').textContent = upcomingTasks.length;
-                    document.getElementById('totalAssessments').textContent = db.assessments.length;
-                    document.getElementById('totalSpecies').textContent = db.species.length;
+                    document.getElementById('totalAssessments').textContent = filteredAssessments.length;
+                    document.getElementById('totalSpecies').textContent = filteredSpecies.length;
 
                     const completedItems = db.complianceChecklist.filter(item => item.compliant === 'Yes').length;
                     const totalItems = db.complianceChecklist.length;
@@ -3256,7 +3906,7 @@
                             tasksList.innerHTML = `
                                 <div class="empty-state">
                                     <i class="bi bi-check-circle"></i>
-                                    <p>No upcoming tasks</p>
+                                    <p>No upcoming tasks for this site</p>
                                 </div>
                             `;
                         } else {
@@ -3290,7 +3940,7 @@
                     if (observationsList) {
                         observationsList.innerHTML = '';
 
-                        const recent = db.monitoring
+                        const recent = filteredMonitoring
                             .sort((a, b) => new Date(b.date) - new Date(a.date))
                             .slice(0, 4);
 
@@ -3298,7 +3948,7 @@
                             observationsList.innerHTML = `
                                 <li class="list-group-item empty-state">
                                     <i class="bi bi-binoculars"></i>
-                                    <p>No recent observations</p>
+                                    <p>No recent observations for this site</p>
                                 </li>
                             `;
                         } else {
@@ -3345,7 +3995,7 @@
                     }
                 },
 
-                // ==================== ASSESSMENT FUNCTIONS ====================
+                // ==================== ASSESSMENT FUNCTIONS (Modified for multi-site) ====================
                 loadAssessments: function() {
                     const table = document.getElementById('assessmentsTable');
                     if (!table) return;
@@ -3353,13 +4003,15 @@
                     const tbody = table.querySelector('tbody');
                     tbody.innerHTML = '';
 
-                    if (db.assessments.length === 0) {
+                    const filteredAssessments = Utils.filterByCurrentSite(db.assessments);
+
+                    if (filteredAssessments.length === 0) {
                         tbody.innerHTML = `
                             <tr>
                                 <td colspan="5" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-clipboard-data"></i>
-                                        <p>No assessments recorded yet</p>
+                                        <p>No assessments recorded for this site</p>
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNewAssessment">
                                             Create First Assessment
                                         </button>
@@ -3368,7 +4020,7 @@
                             </tr>
                         `;
                     } else {
-                        db.assessments.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(assessment => {
+                        filteredAssessments.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(assessment => {
                             const row = tbody.insertRow();
                             row.innerHTML = `
                                 <td data-label="Date">${Utils.formatDate(assessment.date)}</td>
@@ -3426,13 +4078,14 @@
 
                     const newAssessment = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         date: document.getElementById('modalAssessmentDate').value,
                         assessor: document.getElementById('modalAssessorName').value,
                         description: document.getElementById('modalSiteDescription').value,
                         components: components,
                         health: document.getElementById('modalEcosystemHealth').value,
                         threats: threats,
-                        photos: [], // Would handle file uploads in production
+                        photos: [],
                         createdAt: new Date().toISOString()
                     };
 
@@ -3511,14 +4164,16 @@
                     return classes[health] || 'bg-secondary';
                 },
 
-                // ==================== SPECIES FUNCTIONS ====================
+                // ==================== SPECIES FUNCTIONS (Modified for multi-site) ====================
                 loadSpecies: function() {
+                    const filteredSpecies = Utils.filterByCurrentSite(db.species);
+                    
                     // Load species cards
                     const cardsContainer = document.getElementById('speciesCardsContainer');
                     if (cardsContainer) {
                         cardsContainer.innerHTML = '';
 
-                        const recentSpecies = db.species
+                        const recentSpecies = filteredSpecies
                             .sort((a, b) => new Date(b.lastObserved || 0) - new Date(a.lastObserved || 0))
                             .slice(0, 3);
 
@@ -3527,7 +4182,7 @@
                                 <div class="col-12">
                                     <div class="empty-state">
                                         <i class="bi bi-tree"></i>
-                                        <p>No species recorded yet</p>
+                                        <p>No species recorded for this site</p>
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNewSpecies">
                                             Add First Species
                                         </button>
@@ -3571,19 +4226,19 @@
                     // Update dropdowns
                     this.updateSpeciesDropdowns();
 
-                    if (db.species.length === 0) {
+                    if (filteredSpecies.length === 0) {
                         tbody.innerHTML = `
                             <tr>
                                 <td colspan="6" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-tree"></i>
-                                        <p>No species recorded yet</p>
+                                        <p>No species recorded for this site</p>
                                     </div>
                                 </td>
                             </tr>
                         `;
                     } else {
-                        db.species.forEach(species => {
+                        filteredSpecies.forEach(species => {
                             const row = tbody.insertRow();
                             row.innerHTML = `
                                 <td data-label="Scientific Name">${Utils.sanitizeHTML(species.scientificName)}</td>
@@ -3615,11 +4270,13 @@
                 },
 
                 updateSpeciesDropdowns: function() {
+                    const filteredSpecies = Utils.filterByCurrentSite(db.species);
+                    
                     // Monitoring species dropdown
                     const monitoringSelect = document.getElementById('monitoringSpecies');
                     if (monitoringSelect) {
                         monitoringSelect.innerHTML = '';
-                        db.species.forEach(species => {
+                        filteredSpecies.forEach(species => {
                             const option = document.createElement('option');
                             option.value = species.id;
                             option.textContent = `${species.scientificName}${species.commonName ? ` (${species.commonName})` : ''}`;
@@ -3631,7 +4288,7 @@
                     const faunaSelect = document.getElementById('faunaSpecies');
                     if (faunaSelect) {
                         faunaSelect.innerHTML = '<option value="" selected disabled>Select species...</option>';
-                        db.species.filter(s => s.type === 'fauna').forEach(species => {
+                        filteredSpecies.filter(s => s.type === 'fauna').forEach(species => {
                             const option = document.createElement('option');
                             option.value = species.id;
                             option.textContent = `${species.scientificName}${species.commonName ? ` (${species.commonName})` : ''}`;
@@ -3643,7 +4300,7 @@
                     const vegSelect = document.getElementById('vegetationSpecies');
                     if (vegSelect) {
                         vegSelect.innerHTML = '';
-                        db.species.filter(s => s.type === 'flora').forEach(species => {
+                        filteredSpecies.filter(s => s.type === 'flora').forEach(species => {
                             const option = document.createElement('option');
                             option.value = species.id;
                             option.textContent = `${species.scientificName}${species.commonName ? ` (${species.commonName})` : ''}`;
@@ -3668,6 +4325,7 @@
 
                     const newSpecies = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         scientificName: document.getElementById('speciesScientificName').value,
                         commonName: document.getElementById('speciesCommonName').value || null,
                         type: document.getElementById('speciesType').value,
@@ -3778,7 +4436,7 @@
                     return classes[status] || 'bg-secondary';
                 },
 
-                // ==================== ACTIVITY FUNCTIONS ====================
+                // ==================== ACTIVITY FUNCTIONS (Modified for multi-site) ====================
                 loadActivities: function() {
                     this.loadUpcomingActivities();
                     this.loadCompletedActivities();
@@ -3792,7 +4450,8 @@
                     const tbody = table.querySelector('tbody');
                     tbody.innerHTML = '';
 
-                    const upcoming = db.activities
+                    const filteredActivities = Utils.filterByCurrentSite(db.activities);
+                    const upcoming = filteredActivities
                         .filter(a => a.status === 'planned' || a.status === 'in-progress')
                         .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
@@ -3802,7 +4461,7 @@
                                 <td colspan="7" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-calendar-check"></i>
-                                        <p>No upcoming activities</p>
+                                        <p>No upcoming activities for this site</p>
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNewActivity">
                                             Schedule First Activity
                                         </button>
@@ -3843,7 +4502,8 @@
                     const tbody = table.querySelector('tbody');
                     tbody.innerHTML = '';
 
-                    const completed = db.activities
+                    const filteredActivities = Utils.filterByCurrentSite(db.activities);
+                    const completed = filteredActivities
                         .filter(a => a.status === 'completed')
                         .sort((a, b) => new Date(b.endDate || b.startDate) - new Date(a.endDate || a.startDate));
 
@@ -3853,7 +4513,7 @@
                                 <td colspan="7" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-check-circle"></i>
-                                        <p>No completed activities</p>
+                                        <p>No completed activities for this site</p>
                                     </div>
                                 </td>
                             </tr>
@@ -3894,7 +4554,8 @@
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
 
-                    const overdue = db.activities
+                    const filteredActivities = Utils.filterByCurrentSite(db.activities);
+                    const overdue = filteredActivities
                         .filter(a => (a.status === 'planned' || a.status === 'in-progress') && new Date(a.startDate) < today)
                         .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
@@ -3904,7 +4565,7 @@
                                 <td colspan="7" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-exclamation-triangle"></i>
-                                        <p>No overdue activities</p>
+                                        <p>No overdue activities for this site</p>
                                     </div>
                                 </td>
                             </tr>
@@ -3952,6 +4613,7 @@
 
                     const newActivity = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         type: document.getElementById('activityType').value,
                         title: document.getElementById('activityTitle').value,
                         startDate: document.getElementById('activityStartDate').value,
@@ -4106,7 +4768,7 @@
                     return classes[status] || 'bg-secondary';
                 },
 
-                // ==================== MONITORING FUNCTIONS ====================
+                // ==================== MONITORING FUNCTIONS (Modified for multi-site) ====================
                 loadMonitoring: function() {
                     const table = document.getElementById('monitoringTable');
                     if (!table) return;
@@ -4114,13 +4776,15 @@
                     const tbody = table.querySelector('tbody');
                     tbody.innerHTML = '';
 
-                    if (db.monitoring.length === 0) {
+                    const filteredMonitoring = Utils.filterByCurrentSite(db.monitoring);
+
+                    if (filteredMonitoring.length === 0) {
                         tbody.innerHTML = `
                             <tr>
                                 <td colspan="6" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-binoculars"></i>
-                                        <p>No monitoring activities recorded yet</p>
+                                        <p>No monitoring activities recorded for this site</p>
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNewMonitoring">
                                             Add First Monitoring
                                         </button>
@@ -4129,7 +4793,7 @@
                             </tr>
                         `;
                     } else {
-                        db.monitoring.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(monitoring => {
+                        filteredMonitoring.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(monitoring => {
                             const row = tbody.insertRow();
                             row.innerHTML = `
                                 <td data-label="Date">${Utils.formatDate(monitoring.date)}</td>
@@ -4169,13 +4833,14 @@
 
                     const newMonitoring = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         type: document.getElementById('monitoringType').value,
                         date: document.getElementById('monitoringDate').value,
                         location: document.getElementById('monitoringLocation').value,
                         observer: document.getElementById('monitoringObserver').value,
                         findings: document.getElementById('monitoringFindings').value,
                         species: species,
-                        photos: [], // Would handle file uploads
+                        photos: [],
                         notes: document.getElementById('monitoringNotes').value,
                         createdAt: new Date().toISOString()
                     };
@@ -4268,7 +4933,7 @@
                     return formats[type] || Utils.capitalize(type);
                 },
 
-                // ==================== REPORT FUNCTIONS ====================
+                // ==================== REPORT FUNCTIONS (Modified for multi-site) ====================
                 loadReports: function() {
                     const table = document.getElementById('reportsTable');
                     if (!table) return;
@@ -4276,13 +4941,15 @@
                     const tbody = table.querySelector('tbody');
                     tbody.innerHTML = '';
 
-                    if (db.reports.length === 0) {
+                    const filteredReports = Utils.filterByCurrentSite(db.reports);
+
+                    if (filteredReports.length === 0) {
                         tbody.innerHTML = `
                             <tr>
                                 <td colspan="5" class="text-center">
                                     <div class="empty-state">
                                         <i class="bi bi-file-earmark-text"></i>
-                                        <p>No reports generated yet</p>
+                                        <p>No reports generated for this site</p>
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalGenerateReport">
                                             Generate First Report
                                         </button>
@@ -4291,7 +4958,7 @@
                             </tr>
                         `;
                     } else {
-                        db.reports.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(report => {
+                        filteredReports.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(report => {
                             const row = tbody.insertRow();
                             row.innerHTML = `
                                 <td data-label="Date">${Utils.formatDate(report.date)}</td>
@@ -4330,6 +4997,8 @@
                 },
 
                 generateReport: function(type) {
+                    const currentSite = Utils.getCurrentSite();
+                    
                     const reportTypes = {
                         'compliance': 'Compliance Report',
                         'maintenance': 'Maintenance Summary',
@@ -4338,19 +5007,22 @@
                         'threat-management': 'Threat Management'
                     };
 
+                    const filteredData = type === 'maintenance' ? Utils.filterByCurrentSite(db.activities) :
+                                       type === 'monitoring' ? Utils.filterByCurrentSite(db.monitoring) :
+                                       type === 'health-trend' ? Utils.filterByCurrentSite(db.assessments) :
+                                       [];
+
                     const newReport = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         type: type,
                         date: new Date().toISOString(),
                         generatedBy: db.settings.userProfile.name,
                         period: 'All time',
                         content: {
                             title: reportTypes[type],
-                            body: `Report generated for ${db.settings.siteName}`,
-                            data: type === 'maintenance' ? db.activities : 
-                                  type === 'monitoring' ? db.monitoring :
-                                  type === 'health-trend' ? db.assessments :
-                                  type === 'threat-management' ? db.complianceChecklist : [],
+                            body: `Report generated for ${currentSite?.name || 'site'}`,
+                            data: filteredData,
                             progress: type === 'compliance' ? 
                                 Math.round((db.complianceChecklist.filter(item => item.compliant === 'Yes').length / db.complianceChecklist.length) * 100) : null,
                             checklist: type === 'compliance' ? db.complianceChecklist : []
@@ -4378,6 +5050,7 @@
                     const startDate = document.getElementById('reportStartDate').value;
                     const endDate = document.getElementById('reportEndDate').value;
                     const format = document.getElementById('reportFormat').value;
+                    const currentSite = Utils.getCurrentSite();
 
                     const reportTypes = {
                         'compliance': 'Compliance Report',
@@ -4394,37 +5067,39 @@
                         const end = new Date(endDate);
                         
                         if (type === 'maintenance') {
-                            data = db.activities.filter(a => {
+                            data = Utils.filterByCurrentSite(db.activities).filter(a => {
                                 const date = new Date(a.startDate);
                                 return date >= start && date <= end;
                             });
                         } else if (type === 'monitoring') {
-                            data = db.monitoring.filter(m => {
+                            data = Utils.filterByCurrentSite(db.monitoring).filter(m => {
                                 const date = new Date(m.date);
                                 return date >= start && date <= end;
                             });
                         } else if (type === 'health-trend') {
-                            data = db.assessments.filter(a => {
+                            data = Utils.filterByCurrentSite(db.assessments).filter(a => {
                                 const date = new Date(a.date);
                                 return date >= start && date <= end;
                             });
                         }
+                    } else {
+                        data = type === 'maintenance' ? Utils.filterByCurrentSite(db.activities) :
+                               type === 'monitoring' ? Utils.filterByCurrentSite(db.monitoring) :
+                               type === 'health-trend' ? Utils.filterByCurrentSite(db.assessments) :
+                               [];
                     }
 
                     const newReport = {
                         id: Utils.generateId(),
+                        siteId: db.currentSiteId,
                         type: type,
                         date: new Date().toISOString(),
                         generatedBy: db.settings.userProfile.name,
                         period: startDate && endDate ? `${Utils.formatDate(startDate)} to ${Utils.formatDate(endDate)}` : 'All time',
                         content: {
                             title: reportTypes[type],
-                            body: `Report generated for ${db.settings.siteName}`,
-                            data: data.length > 0 ? data : 
-                                  type === 'maintenance' ? db.activities : 
-                                  type === 'monitoring' ? db.monitoring :
-                                  type === 'health-trend' ? db.assessments :
-                                  type === 'threat-management' ? db.complianceChecklist : [],
+                            body: `Report generated for ${currentSite?.name || 'site'}`,
+                            data: data,
                             progress: type === 'compliance' ? 
                                 Math.round((db.complianceChecklist.filter(item => item.compliant === 'Yes').length / db.complianceChecklist.length) * 100) : null,
                             checklist: type === 'compliance' ? db.complianceChecklist : []
@@ -4467,7 +5142,7 @@
                         doc.setTextColor(100, 100, 100);
                         doc.text(`Generated: ${Utils.formatDateTime(report.date)}`, 20, 35);
                         doc.text(`By: ${report.generatedBy}`, 20, 42);
-                        doc.text(`Site: ${db.settings.siteName}`, 20, 49);
+                        doc.text(`Site: ${Utils.getCurrentSite()?.name || 'Unknown'}`, 20, 49);
                         doc.text(`Period: ${report.period}`, 20, 56);
                         
                         let yPos = 70;
@@ -4527,12 +5202,13 @@
                         }
 
                         const wb = XLSX.utils.book_new();
+                        const currentSite = Utils.getCurrentSite();
                         
                         if (report.type === 'compliance') {
                             const data = [
                                 ['Compliance Report'],
                                 ['Generated:', Utils.formatDateTime(report.date), 'By:', report.generatedBy],
-                                ['Site:', db.settings.siteName, 'Period:', report.period],
+                                ['Site:', currentSite?.name || 'Unknown', 'Period:', report.period],
                                 [],
                                 ['Requirement', 'Status', 'Evidence', 'Notes']
                             ];
@@ -4553,12 +5229,12 @@
                             const data = [
                                 ['Maintenance Activities Report'],
                                 ['Generated:', Utils.formatDateTime(report.date), 'By:', report.generatedBy],
-                                ['Site:', db.settings.siteName, 'Period:', report.period],
+                                ['Site:', currentSite?.name || 'Unknown', 'Period:', report.period],
                                 [],
                                 ['Title', 'Type', 'Date', 'Status', 'Assigned To', 'Location', 'Priority']
                             ];
                             
-                            (report.content.data || db.activities).forEach(activity => {
+                            (report.content.data || []).forEach(activity => {
                                 data.push([
                                     activity.title,
                                     this.formatActivityType(activity.type),
@@ -4584,6 +5260,8 @@
 
                 generateWordReport: function(report) {
                     try {
+                        const currentSite = Utils.getCurrentSite();
+                        
                         const html = `
                             <!DOCTYPE html>
                             <html>
@@ -4607,7 +5285,7 @@
                                 <div class="metadata">
                                     <p><strong>Generated:</strong> ${Utils.formatDateTime(report.date)}</p>
                                     <p><strong>By:</strong> ${report.generatedBy}</p>
-                                    <p><strong>Site:</strong> ${db.settings.siteName}</p>
+                                    <p><strong>Site:</strong> ${currentSite?.name || 'Unknown'}</p>
                                     <p><strong>Period:</strong> ${report.period}</p>
                                 </div>
                                 
@@ -4775,7 +5453,7 @@
                     return formats[type] || Utils.capitalize(type);
                 },
 
-                // ==================== COMPLIANCE FUNCTIONS ====================
+                // ==================== COMPLIANCE FUNCTIONS (Global) ====================
                 loadComplianceChecklist: function() {
                     const table = document.getElementById('complianceChecklistTable');
                     if (!table) return;
@@ -4844,18 +5522,14 @@
                     }
                 },
 
-                // ==================== SETTINGS FUNCTIONS ====================
+                // ==================== SETTINGS FUNCTIONS (Modified for multi-site) ====================
                 loadSettings: function() {
                     // User profile
                     document.getElementById('settingsUserName').value = db.settings.userProfile.name || '';
                     document.getElementById('settingsUserEmail').value = db.settings.userProfile.email || '';
                     document.getElementById('settingsUserRole').value = db.settings.userProfile.role || '';
 
-                    // Site settings
-                    document.getElementById('settingsSiteName').value = db.settings.siteName || '';
-                    document.getElementById('settingsSiteLocation').value = db.settings.siteLocation || '';
-                    document.getElementById('settingsSiteArea').value = db.settings.siteArea || '';
-                    document.getElementById('settingsSiteDescription').value = db.settings.siteDescription || '';
+                    // Site management buttons are already in place
                 },
 
                 saveUserProfile: function(e) {
@@ -4875,26 +5549,6 @@
 
                     if (Utils.saveData()) {
                         Utils.showToast('Success', 'Profile updated');
-                        form.classList.remove('was-validated');
-                    }
-                },
-
-                saveSiteSettings: function(e) {
-                    e.preventDefault();
-                    const form = document.getElementById('settingsSiteForm');
-                    
-                    if (!form.checkValidity()) {
-                        form.classList.add('was-validated');
-                        return;
-                    }
-
-                    db.settings.siteName = document.getElementById('settingsSiteName').value;
-                    db.settings.siteLocation = document.getElementById('settingsSiteLocation').value;
-                    db.settings.siteArea = parseFloat(document.getElementById('settingsSiteArea').value);
-                    db.settings.siteDescription = document.getElementById('settingsSiteDescription').value;
-
-                    if (Utils.saveData()) {
-                        Utils.showToast('Success', 'Site settings updated');
                         form.classList.remove('was-validated');
                     }
                 },
@@ -4922,7 +5576,7 @@
                     form.classList.remove('was-validated');
                 },
 
-                // ==================== DATA MANAGEMENT FUNCTIONS ====================
+                // ==================== DATA MANAGEMENT FUNCTIONS (Modified for multi-site) ====================
                 exportAllData: function() {
                     const exportData = {
                         assessments: db.assessments,
@@ -4934,8 +5588,9 @@
                         vegetationSurveys: db.vegetationSurveys,
                         complianceChecklist: db.complianceChecklist,
                         settings: db.settings,
+                        sites: db.sites,
                         exportDate: new Date().toISOString(),
-                        version: '1.0.0'
+                        version: '1.0.0 (Multi-site)'
                     };
 
                     const dataStr = JSON.stringify(exportData, null, 2);
@@ -4965,18 +5620,37 @@
                             // Clear existing data
                             localStorage.clear();
                             
+                            // Reset db
+                            db.assessments = [];
+                            db.species = [];
+                            db.activities = [];
+                            db.monitoring = [];
+                            db.reports = [];
+                            db.faunaSightings = [];
+                            db.vegetationSurveys = [];
+                            db.complianceChecklist = [
+                                { id: 1, requirement: "Identified all relevant legislation", compliant: "", evidence: "", notes: "" },
+                                { id: 2, requirement: "Assessed impacts on protected matters", compliant: "", evidence: "", notes: "" },
+                                { id: 3, requirement: "Obtained necessary permits/approvals", compliant: "", evidence: "", notes: "" },
+                                { id: 4, requirement: "Implemented required protections", compliant: "", evidence: "", notes: "" },
+                                { id: 5, requirement: "Maintained required records", compliant: "", evidence: "", notes: "" }
+                            ];
+                            db.settings = {
+                                userProfile: {
+                                    name: "John Doe",
+                                    email: "john.doe@example.com",
+                                    role: "ecologist"
+                                }
+                            };
+                            db.sites = [];
+                            db.currentSiteId = null;
+                            
                             // Reload initial data
                             this.loadInitialData();
                             
-                            // Refresh all views
-                            this.loadDashboard();
-                            this.loadAssessments();
-                            this.loadSpecies();
-                            this.loadActivities();
-                            this.loadMonitoring();
-                            this.loadReports();
-                            this.loadComplianceChecklist();
-                            this.loadSettings();
+                            // Refresh site selector and all views
+                            SiteManager.loadSiteSelector();
+                            this.loadAllData();
                             
                             // Refresh calendar
                             if (window.calendar) {
@@ -4994,8 +5668,117 @@
                     );
                 },
 
-                // ==================== EVENT LISTENERS ====================
+                // ==================== FAUNA AND VEGETATION FUNCTIONS (Modified for multi-site) ====================
+                saveFaunaSighting: function() {
+                    const form = document.getElementById('formFaunaSighting');
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    const newSighting = {
+                        id: Utils.generateId(),
+                        siteId: db.currentSiteId,
+                        speciesId: parseInt(document.getElementById('faunaSpecies').value),
+                        date: document.getElementById('faunaDate').value,
+                        location: document.getElementById('faunaLocation').value,
+                        observer: document.getElementById('faunaObserver').value,
+                        count: parseInt(document.getElementById('faunaCount').value) || 1,
+                        behavior: document.getElementById('faunaBehavior').value,
+                        photos: [],
+                        notes: document.getElementById('faunaNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    db.faunaSightings.push(newSighting);
+
+                    // Update species last observed
+                    const species = db.species.find(s => s.id === newSighting.speciesId);
+                    if (species) {
+                        species.lastObserved = newSighting.date;
+                    }
+
+                    if (Utils.saveData()) {
+                        form.reset();
+                        form.classList.remove('was-validated');
+                        document.getElementById('faunaPhotoPreview').innerHTML = '';
+                        
+                        bootstrap.Modal.getInstance(document.getElementById('modalFaunaSighting')).hide();
+                        Utils.showToast('Success', 'Fauna sighting saved');
+                        
+                        this.loadSpecies();
+                    }
+                },
+
+                saveVegetationSurvey: function() {
+                    const form = document.getElementById('formVegetationSurvey');
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    const species = Array.from(document.getElementById('vegetationSpecies').selectedOptions)
+                        .map(opt => parseInt(opt.value));
+
+                    const newSurvey = {
+                        id: Utils.generateId(),
+                        siteId: db.currentSiteId,
+                        date: document.getElementById('vegetationDate').value,
+                        location: document.getElementById('vegetationLocation').value,
+                        observer: document.getElementById('vegetationObserver').value,
+                        species: species,
+                        nativeCover: parseInt(document.getElementById('vegetationCover').value) || 0,
+                        weedCover: parseInt(document.getElementById('vegetationWeedCover').value) || 0,
+                        health: document.getElementById('vegetationHealth').value,
+                        findings: document.getElementById('vegetationFindings').value,
+                        photos: [],
+                        notes: document.getElementById('vegetationNotes').value,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    db.vegetationSurveys.push(newSurvey);
+
+                    // Update species last observed
+                    species.forEach(id => {
+                        const s = db.species.find(sp => sp.id === id);
+                        if (s) s.lastObserved = newSurvey.date;
+                    });
+
+                    if (Utils.saveData()) {
+                        form.reset();
+                        form.classList.remove('was-validated');
+                        document.getElementById('vegetationPhotoPreview').innerHTML = '';
+                        
+                        bootstrap.Modal.getInstance(document.getElementById('modalVegetationSurvey')).hide();
+                        Utils.showToast('Success', 'Vegetation survey saved');
+                        
+                        this.loadSpecies();
+                    }
+                },
+
+                // ==================== EVENT LISTENERS (Modified for multi-site) ====================
                 setupEventListeners: function() {
+                    // Site selector
+                    document.getElementById('siteSelector')?.addEventListener('change', (e) => {
+                        const siteId = parseInt(e.target.value);
+                        if (siteId && siteId !== db.currentSiteId) {
+                            const site = db.sites.find(s => s.id === siteId);
+                            if (site) {
+                                SiteManager.promptSwitchSite(siteId, site.name);
+                            }
+                        }
+                    });
+
+                    // Confirm switch site
+                    document.getElementById('confirmSwitchSiteBtn')?.addEventListener('click', () => {
+                        const siteId = parseInt(document.getElementById('switchTargetSiteId').value);
+                        SiteManager.switchSite(siteId);
+                    });
+
+                    // Site management
+                    document.getElementById('saveSiteBtn')?.addEventListener('click', () => SiteManager.saveSite());
+                    document.getElementById('updateSiteBtn')?.addEventListener('click', () => SiteManager.updateSite());
+                    
                     // Save buttons
                     document.getElementById('saveAssessmentBtn')?.addEventListener('click', () => this.saveAssessment());
                     document.getElementById('saveActivityBtn')?.addEventListener('click', () => this.saveActivity());
@@ -5008,7 +5791,6 @@
 
                     // Form submissions
                     document.getElementById('settingsUserProfileForm')?.addEventListener('submit', (e) => this.saveUserProfile(e));
-                    document.getElementById('settingsSiteForm')?.addEventListener('submit', (e) => this.saveSiteSettings(e));
                     document.getElementById('settingsPasswordForm')?.addEventListener('submit', (e) => this.changePassword(e));
 
                     // Data management buttons
@@ -5065,7 +5847,7 @@
                         });
                     });
 
-                    // Map layer toggles
+                    // Map layer toggles (unchanged)
                     document.getElementById('zoneToggle')?.addEventListener('click', function() {
                         if (window.map && window.zonesLayer) {
                             if (window.map.hasLayer(window.zonesLayer)) {
@@ -5193,92 +5975,6 @@
                             }
                         });
                     });
-                },
-
-                // ==================== FAUNA AND VEGETATION FUNCTIONS ====================
-                saveFaunaSighting: function() {
-                    const form = document.getElementById('formFaunaSighting');
-                    if (!form.checkValidity()) {
-                        form.classList.add('was-validated');
-                        return;
-                    }
-
-                    const newSighting = {
-                        id: Utils.generateId(),
-                        speciesId: parseInt(document.getElementById('faunaSpecies').value),
-                        date: document.getElementById('faunaDate').value,
-                        location: document.getElementById('faunaLocation').value,
-                        observer: document.getElementById('faunaObserver').value,
-                        count: parseInt(document.getElementById('faunaCount').value) || 1,
-                        behavior: document.getElementById('faunaBehavior').value,
-                        photos: [],
-                        notes: document.getElementById('faunaNotes').value,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    db.faunaSightings.push(newSighting);
-
-                    // Update species last observed
-                    const species = db.species.find(s => s.id === newSighting.speciesId);
-                    if (species) {
-                        species.lastObserved = newSighting.date;
-                    }
-
-                    if (Utils.saveData()) {
-                        form.reset();
-                        form.classList.remove('was-validated');
-                        document.getElementById('faunaPhotoPreview').innerHTML = '';
-                        
-                        bootstrap.Modal.getInstance(document.getElementById('modalFaunaSighting')).hide();
-                        Utils.showToast('Success', 'Fauna sighting saved');
-                        
-                        this.loadSpecies();
-                    }
-                },
-
-                saveVegetationSurvey: function() {
-                    const form = document.getElementById('formVegetationSurvey');
-                    if (!form.checkValidity()) {
-                        form.classList.add('was-validated');
-                        return;
-                    }
-
-                    const species = Array.from(document.getElementById('vegetationSpecies').selectedOptions)
-                        .map(opt => parseInt(opt.value));
-
-                    const newSurvey = {
-                        id: Utils.generateId(),
-                        date: document.getElementById('vegetationDate').value,
-                        location: document.getElementById('vegetationLocation').value,
-                        observer: document.getElementById('vegetationObserver').value,
-                        species: species,
-                        nativeCover: parseInt(document.getElementById('vegetationCover').value) || 0,
-                        weedCover: parseInt(document.getElementById('vegetationWeedCover').value) || 0,
-                        health: document.getElementById('vegetationHealth').value,
-                        findings: document.getElementById('vegetationFindings').value,
-                        photos: [],
-                        notes: document.getElementById('vegetationNotes').value,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    db.vegetationSurveys.push(newSurvey);
-
-                    // Update species last observed
-                    species.forEach(id => {
-                        const s = db.species.find(sp => sp.id === id);
-                        if (s) s.lastObserved = newSurvey.date;
-                    });
-
-                    if (Utils.saveData()) {
-                        form.reset();
-                        form.classList.remove('was-validated');
-                        document.getElementById('vegetationPhotoPreview').innerHTML = '';
-                        
-                        bootstrap.Modal.getInstance(document.getElementById('modalVegetationSurvey')).hide();
-                        Utils.showToast('Success', 'Vegetation survey saved');
-                        
-                        this.loadSpecies();
-                    }
                 }
             };
 
